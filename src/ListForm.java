@@ -70,14 +70,17 @@ public class ListForm extends CanvasConsumer  {
                 } else if (oper.equals("fg")) {
  		
                 	panel.setColor(CanvasScreen.FG,(String) vR.elementAt(2),(String) vR.elementAt(3),(String) vR.elementAt(4));
+                        return;  // do not switch to list form
                 
                 } else if (oper.equals("bg")) {
  		
                 	panel.setColor(CanvasScreen.BG,(String) vR.elementAt(2),(String) vR.elementAt(3),(String) vR.elementAt(4));
-                
+                        return;  // do not switch to list form
+			
                 } else if (oper.equals("font")) {
                         
  			panel.setFont(2, vR);
+                        return;   // do not switch to list form
                         
                 } else if (oper.equals("select")) {
 			

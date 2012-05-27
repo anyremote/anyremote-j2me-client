@@ -221,7 +221,7 @@ public class ControlForm extends CanvasConsumer {
 	public void setFontCF(Vector vR) {
                 cfFont = controller.cScreen.getFontBySpec(vR, 1);
                 yCaption = cfFont.getHeight() + 3;
-                controller.showScr(Controller.CONTROL_FORM);
+                //controller.showScr(Controller.CONTROL_FORM);
  	}
 	 
 	public void setColor(int what, String r,String g, String b) {
@@ -240,7 +240,7 @@ public class ControlForm extends CanvasConsumer {
 			fg[1] = RGB[1];
 			fg[2] = RGB[2];
                 }
-                controller.showScr(Controller.CONTROL_FORM);
+                //controller.showScr(Controller.CONTROL_FORM);
 	}
 
 	public void resetIconSize(int sz, boolean reload) {

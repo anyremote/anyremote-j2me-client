@@ -191,17 +191,21 @@ public class TextScreen extends CanvasConsumer {
                 } else if (oper.equals("fg")) {
                 
                 	panel.setColor(CanvasScreen.FG,(String) vR.elementAt(2),(String) vR.elementAt(3),(String) vR.elementAt(4));
-            	
+            	        return;   // do not switch to text form
+			
                 } else if (oper.equals("bg")) {
 		    try {
                 	panel.setColor(CanvasScreen.BG,(String) vR.elementAt(2),(String) vR.elementAt(3),(String) vR.elementAt(4));
                    } catch (Exception e) {
                 	controller.showAlert("Exception/TS.processData() " + e.getClass().getName());
-                   }            	
+                   }    
+		   return;   // do not switch to text form
+		           	
                 } else if (oper.equals("font")) {
                 
  			panel.setFont(2, vR);
                         reparseString();
+			return;   // do not switch to text form
                          
              	} else if (oper.equals("close")) {
                 	//System.out.println("list close");
