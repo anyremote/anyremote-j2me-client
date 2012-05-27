@@ -1,0 +1,12 @@
+INSTALL
+==================
+
+Install prerequsites:
+
+    Sun WTK  (http://java.sun.com/products/sjwtoolkit/)
+    ProGuard (http://proguard.sourceforge.net/)
+	
+To install the application, type:
+
+        ./configure --prefix=/usr --with-wtk=<path to WTK> --with-proguard=<path to ProGuard>
+        su -c "make install"

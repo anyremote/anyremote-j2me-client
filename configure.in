@@ -1,0 +1,87 @@
+# 
+# anyremote-j2me-client - J2ME client for anyRemote.
+#
+# Copyright (C) 2008,2009,2010 Mikhail Fedotov <anyremote@mail.ru>
+# 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
+# 
+
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ(2.59)
+
+AC_INIT(anyremote-j2me-client,4.23)
+
+AC_PATH_PROG([JAVAC], [javac], [no])
+AC_PATH_PROG([JAVA],  [java],  [no])
+AC_PATH_PROG([JAR],   [jar],   [no])
+
+AS_IF([test "x$JAVAC" == xno],
+    AC_MSG_FAILURE(
+         [Java compiler not found !])
+)
+
+AS_IF([test "x$JAVA" == xno],
+    AC_MSG_FAILURE(
+         [Java interpreter not found !])
+)
+
+AS_IF([test "x$JAR" == xno],
+    AC_MSG_FAILURE(
+         [Java archivier not found !])
+)
+
+AC_ARG_WITH(wtk,
+  [AS_HELP_STRING([--with-wtk],
+                  [path to WTK])],
+  [wtk=yes],
+  [wtk=no])
+
+AS_IF([test "x$wtk" == xno],
+    AC_MSG_FAILURE(
+         [please specify --with-wtk <path to WTK>])
+)
+
+AC_ARG_WITH(proguard,
+  [AS_HELP_STRING([--with-proguard],
+                  [path to ProGuard])],
+  [proguard=yes],
+  [proguard=no])
+
+AS_IF([test "x$proguard" == xno],
+    AC_MSG_FAILURE(
+         [please specify --with-proguard <path to ProGuard>])
+)
+
+
+AC_CONFIG_SRCDIR([src/ARProtocol.java])
+AM_INIT_AUTOMAKE(anyremote-j2me-client, AC_PACKAGE_VERSION)
+
+AS_IF([test "x$wtk" == xyes],
+  WTK_HOME=$with_wtk
+)
+
+AS_IF([test "x$proguard" == xyes],
+  PROGUARD_HOME=$with_proguard
+)
+
+AC_SUBST(WTK_HOME)        
+AC_SUBST(PROGUARD_HOME)        
+AC_SUBST(PACKAGE_VERSION)        
+
+
+AC_OUTPUT([Makefile
+          src/Makefile])
