@@ -221,7 +221,10 @@ public class ControlForm extends CanvasConsumer {
 	public void setFontCF(Vector vR) {
                 cfFont = controller.cScreen.getFontBySpec(vR, 1);
                 yCaption = cfFont.getHeight() + 3;
-                //controller.showScr(Controller.CONTROL_FORM);
+ 		if (controller.cScreen.currentScreen == this) {
+			showScreen();
+		}
+               //controller.showScr(Controller.CONTROL_FORM);
  	}
 	 
 	public void setColor(int what, String r,String g, String b) {
@@ -240,6 +243,9 @@ public class ControlForm extends CanvasConsumer {
 			fg[1] = RGB[1];
 			fg[2] = RGB[2];
                 }
+		if (controller.cScreen.currentScreen == this) {
+			showScreen();
+		}
                 //controller.showScr(Controller.CONTROL_FORM);
 	}
 
@@ -252,18 +258,20 @@ public class ControlForm extends CanvasConsumer {
 			if (clickIcon != null) {
 				break;
 			}
-			if (sz == 128) {  	// try to find image of different size 128->96->64->48->32->16->128
-				sz = 96;
-			} else if (sz == 96) {
-				sz = 64;
-			} else if (sz == 64) {
-				sz = 48;
-			} else if (sz == 48) {
-				sz = 32;
-			} else if (sz == 32) {
-				sz = 16;
-			} else if (sz == 16) {
+			if (sz > 128) {  	// try to find image of different size 128->96->64->48->32->16->128
 				sz = 128;
+			} else if (sz > 96) {
+				sz = 96;
+			} else if (sz > 64) {
+				sz = 64;
+			} else if (sz > 48) {
+				sz = 48;
+			} else if (sz > 32) {
+				sz = 32;
+			} else if (sz > 16) {
+				sz = 16;
+			} else {
+			        sz = 128;
 			}
 			i++;
                 }
@@ -638,9 +646,7 @@ public class ControlForm extends CanvasConsumer {
                                               					 controller.cScreen.CW>>1, yInfo[n], Graphics.TOP|Graphics.HCENTER);
 					}
                                 }
-				if (!controller.lazyRepaint) {
-               				controller.cScreen.flushGraphics();
-				}
+				controller.cScreen.flushGraphics();
 			} // synchronized
                         
        		} catch (Exception e) {

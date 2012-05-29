@@ -64,7 +64,6 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 	// Parameters (Set(parameter, ...))
 	boolean     debug;		// send debug output to anyRemote
 	boolean     fullRepaint;	// flush only fullscreen
-	boolean     lazyRepaint;	// repaint only by Set(repaint)
 	boolean     seFix;		// fix SE-K750 flushGraphics(,,?,?) issue
 	boolean     siemensFix; 	// fix Siemens-S65 repaint issue
 	boolean     nokiaFixRepaint;	// fix Nokia 6111 (possibly all series 40) non-repaint issue
@@ -110,7 +109,6 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
                 //currDisp 	= null;
 		//callsNum        = 0;
 
-		//lazyRepaint	= false;
 		//fullRepaint     = false;
                 
                 //btComm          = null;
@@ -448,12 +446,6 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 				} else if (value.startsWith("off")) {
 					debug = false;
                         	}
-			} else if (param.startsWith("lazy_repaint")) {
-				if (value.startsWith("on")) {
-					lazyRepaint = true;
-				} else if  (value.startsWith("off")) {
-					lazyRepaint = false;
-                        	}
 			} else if (param.startsWith("full_repaint")) {
 				if (value.startsWith("on")) {
 					fullRepaint = true;
@@ -577,10 +569,13 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 				if (cScreen.cf.split < 0) {
 					cScreen.cf.split = 0;
 				}	
-				if (cScreen.cf.split > cScreen.CW/7) {
-					cScreen.cf.split = cScreen.CW/7;
+				if (cScreen.cf.split > cScreen.CW/6) {
+					cScreen.cf.split = cScreen.CW/6;
 				}
 				cScreen.cf.setIconXY();	
+			} else if (param.startsWith("icon_size")) {
+			        int sz = parseKey(value);
+			        cScreen.cf.resetIconSize(sz,true); // will be scaled to existing icon set size
 			}
                } 
 	}

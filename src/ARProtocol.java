@@ -65,6 +65,8 @@ public class ARProtocol {
 	static final int CMD_GETCURSOR  = 56;
 	static final int CMD_GETPASS    = 57;
 	static final int CMD_GETPING    = 58;
+        static final int CMD_GETICSIZE  = 59;
+        static final int CMD_GETICPAD   = 60;
 	
 	static final int CMD_CLOSECONN  = 101;
 	//static final int CMD_EXIT       = 102;
@@ -225,6 +227,10 @@ public class ARProtocol {
 			return CMD_GETCURSOR;
 		} else if (header.equals("Get(ping")) {
 			return CMD_GETPING;
+		} else if (header.equals("Get(icon_size")) {
+			return CMD_GETICSIZE;
+		} else if (header.equals("Get(icon_padding")) {
+			return CMD_GETICPAD;
 		} else if (header.equals("Get(password")) {
 			return CMD_GETPASS;
 		} else if (header.equals("Set(disconnect")) {
@@ -855,6 +861,14 @@ public class ARProtocol {
 
 			case CMD_GETCVRSIZE:
                  		queueCommand("CoverSize("+controller.cScreen.cf.getCoverSize()+",)");
+				break;
+
+			case CMD_GETICSIZE:
+                 		queueCommand("IconSize("+controller.cScreen.cf.icSize+",)");
+				break;
+				
+			case CMD_GETICPAD:
+                 		queueCommand("IconPadding("+controller.cScreen.cf.split+",)");
 				break;
 			
 			case CMD_GETVER:
