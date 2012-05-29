@@ -1,12 +1,11 @@
 * Tue May 29 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.25
-- Commands Set(parameter,icon_size|icon_padding,...) and 
-  Get(icon_size|icon_padding) were added, command Set(skin,...,split,...) 
-  Set(parameter,lazy_repaint) were removed. Do not switch screen on
+- Commands Set(parameter,icon_size,...) and  Get(icon_size|icon_padding) were 
+  added, command Set(skin,...,size*,...)  was removed. Do not switch screen on 
   Set(*fg|bg|font*) commands.
 
 * Wed Mar 15 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.24
-- Command Set(parameter,icon_padding,...) was added, command Set(skin,...,split,...) 
-  was removed
+- Command Set(parameter,icon_padding,...) was added, command 
+  Set(skin,...,split,...) was removed
 
 * Wed Dec 21 2011 Mikhail Fedotov <anyremote at mail.ru> - 4.23
 - Command Set(popup,...) was added, command Set(text,wrap,...) was removed

@@ -1,6 +1,6 @@
 Summary: J2ME client for anyremote
 Name: anyremote-J2ME-client
-Version: 4.23
+Version: 4.25
 Release: 1
 License: GPLv2+
 Group: Applications/System
@@ -31,6 +31,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}
 
 %changelog
+
+* Tue May 29 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.25
+- Commands Set(parameter,icon_size,...) and  Get(icon_size|icon_padding) were 
+  added, command Set(skin,...,size*,...)  was removed. Do not switch screen on 
+  Set(*fg|bg|font*) commands.
+
+* Wed Mar 15 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.24
+- Command Set(parameter,icon_padding,...) was added, command 
+  Set(skin,...,split,...) was removed
 
 * Wed Dec 21 18 2010 Mikhail Fedotov <anyremote at mail.ru> - 4.23
 - Command Set(popup,...) was added, command Set(text,wrap,...) was removed

@@ -1,5 +1,5 @@
 %define name anyremote-J2ME-client
-%define version 4.23
+%define version 4.25
 
 Summary: J2ME client for anyremote
 Name: anyremote-J2ME-client
