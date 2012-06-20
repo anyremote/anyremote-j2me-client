@@ -98,6 +98,9 @@ preverify-nojsr82:
 #Nokia-MIDlet-Background-Event: pause
 #MIDletX-No-Command: true
 
+#
+# 16x16 icons used in lists !!!
+#
 jar00:
 	cp MANIFEST.template MANIFEST.MF
 	jar cfvm anyRemote-nonobf.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png 16/file.png 16/click_icon.png 32/click_icon.png 64/click_icon.png 16/default.png 32/default.png 64/default.png
@@ -112,43 +115,43 @@ jar16b:
 
 jar32:
 	cp MANIFEST.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf32.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png 16/file.png 32
+	jar cfvm anyRemote-nonobf32.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png 16 32
 
 jar32b:
 	cp MANIFEST64.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf32b.jar MANIFEST.MF -C classes . anyRemote64.png 16/file.png 32
+	jar cfvm anyRemote-nonobf32b.jar MANIFEST.MF -C classes . anyRemote64.png 16 32
 
 jar48:
 	cp MANIFEST.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf48.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png 16/file.png 48
+	jar cfvm anyRemote-nonobf48.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png 16 48
 
 jar48b:
 	cp MANIFEST64.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf48b.jar MANIFEST.MF -C classes . anyRemote64.png 16/file.png 48
+	jar cfvm anyRemote-nonobf48b.jar MANIFEST.MF -C classes . anyRemote64.png 16 48
 
 jar64:
 	cp MANIFEST.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf64.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png 16/file.png 64
+	jar cfvm anyRemote-nonobf64.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png 16 64
 
 jar64b:
 	cp MANIFEST64.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf64b.jar MANIFEST.MF -C classes . anyRemote64.png 16/file.png 64
+	jar cfvm anyRemote-nonobf64b.jar MANIFEST.MF -C classes . anyRemote64.png 16 64
 
 jar96:
 	cp MANIFEST.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf96.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png anyRemote256.png 16/file.png 96
+	jar cfvm anyRemote-nonobf96.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png anyRemote256.png 16 96
 
 jar96b:
 	cp MANIFEST64.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf96b.jar MANIFEST.MF -C classes . anyRemote64.png anyRemote256.png 16/file.png 96
+	jar cfvm anyRemote-nonobf96b.jar MANIFEST.MF -C classes . anyRemote64.png anyRemote256.png 16 96
 
 jar128:
 	cp MANIFEST.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf128.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png anyRemote256.png 16/file.png 128
+	jar cfvm anyRemote-nonobf128.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png anyRemote256.png 16 128
 
 jar128b:
 	cp MANIFEST64.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf128b.jar MANIFEST.MF -C classes . anyRemote64.png anyRemote256.png 16/file.png 128
+	jar cfvm anyRemote-nonobf128b.jar MANIFEST.MF -C classes . anyRemote64.png anyRemote256.png 16 128
 
 jarfull:
 	cp MANIFEST.template MANIFEST.MF
@@ -156,7 +159,7 @@ jarfull:
 
 jarwm:
 	cp MANIFEST-NOJSR82.template MANIFEST.MF
-	jar cfvm anyRemote-nonobfwm.jar MANIFEST.MF -C classes-nojsr82 . anyRemote64.png 16/file.png 48 64 96 128
+	jar cfvm anyRemote-nonobfwm.jar MANIFEST.MF -C classes-nojsr82 . anyRemote64.png 16 48 64 96 128
 
 obfuscate00:
 	java -jar ${PROGUARD_HOME}/lib/proguard.jar -injars anyRemote-nonobf.jar -outjars anyRemote.jar ${OBFUSCATE_FLAGS}
