@@ -139,8 +139,8 @@ public class ControlForm extends CanvasConsumer {
 		yCaption  = cfFont.getHeight() + 3;
                 skin 	  = SK_DEFAULT;
 
-                int sz = controller.cScreen.CH >= 160 ? 
-		                 (controller.cScreen.CH >= 240 ? 
+                int sz = controller.cScreen.CH >= 192 ? 
+		                 (controller.cScreen.CH >= 288 ? 
 			             (controller.cScreen.CH >= 320 ? 
 			                 (controller.cScreen.CH >= 480 ? 
 				             (controller.cScreen.CH >= 640 ? 128 : 96)
