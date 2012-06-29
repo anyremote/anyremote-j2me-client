@@ -131,27 +131,27 @@ jar48b:
 
 jar64:
 	cp MANIFEST.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf64.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png 16 64
+	jar cfvm anyRemote-nonobf64.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png 16 32 64
 
 jar64b:
 	cp MANIFEST64.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf64b.jar MANIFEST.MF -C classes . anyRemote64.png 16 64
+	jar cfvm anyRemote-nonobf64b.jar MANIFEST.MF -C classes . anyRemote64.png 16 32 64
 
 jar96:
 	cp MANIFEST.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf96.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png anyRemote256.png 16 96
+	jar cfvm anyRemote-nonobf96.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png anyRemote256.png 16 32 96
 
 jar96b:
 	cp MANIFEST64.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf96b.jar MANIFEST.MF -C classes . anyRemote64.png anyRemote256.png 16 96
+	jar cfvm anyRemote-nonobf96b.jar MANIFEST.MF -C classes . anyRemote64.png anyRemote256.png 16 32 96
 
 jar128:
 	cp MANIFEST.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf128.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png anyRemote256.png 16 128
+	jar cfvm anyRemote-nonobf128.jar MANIFEST.MF -C classes . anyRemote.png anyRemote64.png anyRemote256.png 16 64 128
 
 jar128b:
 	cp MANIFEST64.template MANIFEST.MF
-	jar cfvm anyRemote-nonobf128b.jar MANIFEST.MF -C classes . anyRemote64.png anyRemote256.png 16 128
+	jar cfvm anyRemote-nonobf128b.jar MANIFEST.MF -C classes . anyRemote64.png anyRemote256.png 16 64 128
 
 jarfull:
 	cp MANIFEST.template MANIFEST.MF

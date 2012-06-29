@@ -1,6 +1,7 @@
 * Fri Jun 29 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.26
 - Do not switch screen on Set(*,close) commands. Allow Set(layout,3x4|7x1)
-  syntax instead of Set(skin,default|bottomline).
+  syntax instead of Set(skin,default|bottomline). Store 16x16 icon set in each
+  JAR file.
 
 * Tue May 29 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.25
 - Commands Set(parameter,icon_size,...) and  Get(icon_size|icon_padding) were 

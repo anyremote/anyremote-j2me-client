@@ -19,19 +19,19 @@ There are several variants of JAR file:
 anyRemote-16.jar - contains only 16x16 icon set. Best variant for phones with 
                    160x160 screen or lower.
 
-anyRemote-32.jar - contains 32x32 icon sets.
+anyRemote-32.jar - contains 16x16 and 32x32 icon sets.
 
-anyRemote-48.jar - contains 48x48 icon set. Best variant for phones 
+anyRemote-48.jar - contains 16x16 and 48x48 icon set. 
+
+anyRemote-64.jar - contains 16x16, 32x32 and 64x64 icon sets. Best variant for phones 
 		   with 240x320 screen.
 
-anyRemote-64.jar - contains 64x64 icon sets. 
+anyRemote-96.jar - contains 16x16, 32x32 and 96x96 icon sets.
 
-anyRemote-96.jar - contains 96x96 icon sets.
-
-anyRemote-128.jar - contains 128x128 icon sets. Best variant for 
+anyRemote-128.jar - contains 16x16, 64x64 and 128x128 icon sets. Best variant for 
                    phones with screen higher than 480x640.
 
-anyRemote-nojsr82.jar - contains 32x32 and 64x64 icon sets and 64x64 title icon. 
+anyRemote-nojsr82.jar - contains 16x16, 48x48, 64x64, 96x96, 64x64 and 128x128 icon sets and 64x64 title icon. 
                    This version does not supports JSR-82 and can be used in 
 		   WinMobile or Linux-based devices with Esmertec's Jbed installed.
 

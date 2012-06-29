@@ -50,6 +50,7 @@ public class ControlForm extends CanvasConsumer {
 	int      	yCaption;
 
 	static final int NUM_ICONS     = 12;
+	static final int NUM_ICONS_7X1 = 7;
 	static final int NUM_INFOLINES = 10;
               
         static final int SK_DEFAULT    = 0;
@@ -138,11 +139,11 @@ public class ControlForm extends CanvasConsumer {
 		yCaption  = cfFont.getHeight() + 3;
                 skin 	  = SK_DEFAULT;
 
-                int sz = controller.cScreen.CH >= 220 ? 
-		                 (controller.cScreen.CH >= 280 ? 
-			             (controller.cScreen.CH >= 340 ? 
-			                 (controller.cScreen.CH >= 400 ? 
-				             (controller.cScreen.CH >= 600 ? 128 : 96)
+                int sz = controller.cScreen.CH >= 160 ? 
+		                 (controller.cScreen.CH >= 240 ? 
+			             (controller.cScreen.CH >= 320 ? 
+			                 (controller.cScreen.CH >= 480 ? 
+				             (controller.cScreen.CH >= 640 ? 128 : 96)
 				         : 64)
 				     : 48)
 			         : 32)
@@ -1016,7 +1017,7 @@ public class ControlForm extends CanvasConsumer {
         
         //
         //
-        // A-kind-of skin support. Calculate coordinates of GUI elements depending on skin
+        // Icon layouts support. Calculate coordinates of GUI elements depending on layout type
         //
         //
         private int setLastIcon() {
@@ -1024,6 +1025,9 @@ public class ControlForm extends CanvasConsumer {
                 if (iconMax > NUM_ICONS) {
                 	iconMax = NUM_ICONS;
                 }
+		if (skin == SK_7X1 && iconMax > NUM_ICONS_7X1) {
+		        iconMax = NUM_ICONS_7X1;
+		}
 		for (;iconMax>=0; iconMax--) {
 			if (!iconNames[iconMax-1].equals("none")) {
 				break;
