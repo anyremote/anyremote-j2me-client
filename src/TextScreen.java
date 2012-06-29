@@ -166,7 +166,11 @@ public class TextScreen extends CanvasConsumer {
              	if (oper.equals("clear")) {
                 
 			cleanUp();
-                        
+ 			if (controller.cScreen.currentScreen == this) {
+				showScreen();
+			}
+            	        return;   // do not switch to text form
+                       
                 } else if (oper.equals("add") || 
 		           oper.equals("replace")) {
                 

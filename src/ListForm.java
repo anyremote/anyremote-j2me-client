@@ -56,6 +56,10 @@ public class ListForm extends CanvasConsumer  {
                 if (oper.equals("clear")) {
 		
                 	cleanUp();
+			if (controller.cScreen.currentScreen == this) {
+				showScreen();
+			}
+                        return;  // do not switch to list form
              	
                 } else if (oper.equals("close")) {
                 

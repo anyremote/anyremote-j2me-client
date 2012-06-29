@@ -23,7 +23,7 @@
 
 AC_PREREQ(2.59)
 
-AC_INIT(anyremote-j2me-client,4.25)
+AC_INIT(anyremote-j2me-client,4.26)
 
 AC_PATH_PROG([JAVAC], [javac], [no])
 AC_PATH_PROG([JAVA],  [java],  [no])
@@ -52,7 +52,7 @@ AC_ARG_WITH(wtk,
 
 AS_IF([test "x$wtk" == xno],
     AC_MSG_FAILURE(
-         [please specify --with-wtk <path to WTK>])
+         [please specify --with-wtk=<path to WTK>])
 )
 
 AC_ARG_WITH(proguard,
@@ -63,7 +63,7 @@ AC_ARG_WITH(proguard,
 
 AS_IF([test "x$proguard" == xno],
     AC_MSG_FAILURE(
-         [please specify --with-proguard <path to ProGuard>])
+         [please specify --with-proguard=<path to ProGuard>])
 )
 
 

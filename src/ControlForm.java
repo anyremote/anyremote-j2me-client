@@ -53,7 +53,7 @@ public class ControlForm extends CanvasConsumer {
 	static final int NUM_INFOLINES = 10;
               
         static final int SK_DEFAULT    = 0;
-        static final int SK_BOTTOMLINE = 1;
+        static final int SK_7X1 = 1;
         int   skin;
         
         int   startTitleY;
@@ -360,10 +360,12 @@ public class ControlForm extends CanvasConsumer {
 		}
                 
         	int newSkin = skin;
-        	if (name.equals("default")) {
+        	if (name.equals("default") ||
+		    name.equals("3x4")) {
                 	newSkin = SK_DEFAULT;
-                } else if (name.equals("bottomline")) {
-                	newSkin = SK_BOTTOMLINE;
+                } else if (name.equals("7x1") ||
+		           name.equals("bottomline")) {
+                	newSkin = SK_7X1;
                 }
 		
                 if (skin      != newSkin   || 
@@ -674,7 +676,7 @@ public class ControlForm extends CanvasConsumer {
         	int y1 = controller.cScreen.CH - 8;
                 int xs = 10;
 
-                if (skin == SK_BOTTOMLINE) {
+                if (skin == SK_7X1) {
                 	y1 -= (icSize + 2);
                         xs = xCorner+xOffset[0];
                 }
@@ -802,7 +804,7 @@ public class ControlForm extends CanvasConsumer {
 	        //System.out.println("handleJoystickAction "+gAction);
                 int ic = curIcon;
                 
-		if (skin==SK_BOTTOMLINE) {
+		if (skin==SK_7X1) {
  			if (gAction == Canvas.LEFT) {
                         	ic = curIcon - 1;
                 		if (ic<0) {
@@ -818,9 +820,9 @@ public class ControlForm extends CanvasConsumer {
                                 } 
                 	} else if (gAction == Canvas.FIRE) {
                 		controller.protocol.queueCommand(num2key(ic), true);
-                	} else if (gAction == Canvas.UP && skin==SK_BOTTOMLINE && (!upEvent.equals(""))) {
+                	} else if (gAction == Canvas.UP && skin==SK_7X1 && (!upEvent.equals(""))) {
 				controller.protocol.queueCommand(upEvent);
-                	} else if (gAction == Canvas.DOWN && skin==SK_BOTTOMLINE && (!downEvent.equals(""))) {
+                	} else if (gAction == Canvas.DOWN && skin==SK_7X1 && (!downEvent.equals(""))) {
  				controller.protocol.queueCommand(downEvent);
                         } else {
  				return false;
@@ -1039,7 +1041,7 @@ public class ControlForm extends CanvasConsumer {
                         int iSize = icSize + (split<<1);
  			
         		switch (skin) {
-			case SK_BOTTOMLINE:
+			case SK_7X1:
 				iconMax = setLastIcon();
                                 
                                 fGap = (w - iconMax*iSize)>>1;
@@ -1094,13 +1096,13 @@ public class ControlForm extends CanvasConsumer {
                 	if (controller.cScreen.isFullscreen) {
                         	yShift = yCaption;
                         }
-                	if (useVolume && (skin == SK_DEFAULT || skin == SK_BOTTOMLINE)) {
+                	if (useVolume && (skin == SK_DEFAULT || skin == SK_7X1)) {
                         	yShift2 = 8;
                         }
                         int y1 = ((FH*3)>>1) + yShift;
                 
         		switch (skin) {
-                	case SK_BOTTOMLINE:
+                	case SK_7X1:
 				xCorner = 0;
                                 yCorner = H - iSize - 2;
                                 
@@ -1162,7 +1164,7 @@ public class ControlForm extends CanvasConsumer {
 	
 	
 	public int getCoverSize() {
-        	if (skin == SK_BOTTOMLINE && useTicker) {
+        	if (skin == SK_7X1 && useTicker) {
 
                 	int yTop    = getStatusY() + (cfFont.getHeight()<<2);	// title + status size
                 	int yBottom = yCorner;

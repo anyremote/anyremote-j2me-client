@@ -47,7 +47,7 @@ public class ARProtocol {
 	static final int CMD_MENU     	= 10;
 	static final int CMD_PARAM      = 11;
 	static final int CMD_REPAINT    = 12;
-	static final int CMD_SKIN     	= 13;
+	static final int CMD_LAYOUT     = 13;
 	static final int CMD_STATUS     = 14;
 	static final int CMD_TEXT     	= 15;
 	static final int CMD_TITLE      = 16;
@@ -197,8 +197,9 @@ public class ARProtocol {
 			return CMD_PARAM;
 		} else if (header.equals("Set(repaint")) {
 			return CMD_REPAINT;
-		} else if (header.equals("Set(skin")) {
-			return CMD_SKIN;
+		} else if (header.equals("Set(layout") ||
+		           header.equals("Set(skin")) {		// obsoleted
+			return CMD_LAYOUT;
 		} else if (header.equals("Set(status")) {
 			return CMD_STATUS;
 		} else if (header.equals("Set(text")) {
@@ -818,7 +819,7 @@ public class ARProtocol {
 				controller.repaintCanvas();
 				break;
 				
-			case CMD_SKIN:
+			case CMD_LAYOUT:
 				controller.cScreen.cf.setSkin(cmdTokens);
 				break;
 				      

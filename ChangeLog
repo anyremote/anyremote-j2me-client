@@ -1,3 +1,7 @@
+* Fri Jun 29 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.26
+- Do not switch screen on Set(*,close) commands. Allow Set(layout,3x4|7x1)
+  syntax instead of Set(skin,default|bottomline).
+
 * Tue May 29 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.25
 - Commands Set(parameter,icon_size,...) and  Get(icon_size|icon_padding) were 
   added, command Set(skin,...,size*,...)  was removed. Do not switch screen on 
