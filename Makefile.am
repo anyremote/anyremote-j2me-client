@@ -26,8 +26,7 @@ EXTRA_DIST = INSTALL AUTHORS src/Makefile* src/*java \
              src/BtComm.java.jsr82 src/Controller.java.jsr82 src/Controller.java.nojsr82 \
              src/*png src/16 src/32 src/48 src/64 src/96 src/128\
 	     src/*.jar src/*.jad \
-	     src/MANIFEST.template src/MANIFEST64.template src/MANIFEST-NOJSR82.template \
-	     specs
+	     src/MANIFEST.template src/MANIFEST64.template src/MANIFEST-NOJSR82.template
 
 install-data-local:
 	test -z $(DESTDIR)$(pkgdatadir) || mkdir -p -- . $(DESTDIR)$(pkgdatadir)
