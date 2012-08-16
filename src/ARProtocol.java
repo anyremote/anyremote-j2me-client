@@ -836,7 +836,22 @@ public class ARProtocol {
 				break;
 				
 			case CMD_VIBRATE:
-				Display.getDisplay(controller).vibrate(500);
+			
+				int vi = 2;
+				if (cmdTokens.size() > 1) {
+                			try {
+                				vi = (int) Integer.parseInt((String) cmdTokens.elementAt(1));
+                        		} catch (NumberFormatException e) {
+                				//controller.showAlert("Incorrect data in Set(vibrate,...) command");
+					}
+				}
+                        	if (vi < 0) {
+                        		break; // skip 
+                        	}
+                        	if (vi > 300) {
+                        		vi = 300;
+                        	}
+ 				Display.getDisplay(controller).vibrate(100*vi);
 				break;
 				
 			case CMD_VOLUME:
