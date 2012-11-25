@@ -1,3 +1,6 @@
+* Sun Nov 25 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.28
+- Support Get(ping,timeout) command with keepalive handling. 
+
 * Fri Aug 16 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.27
 - Support Set(vibrate,duration) command. 
 

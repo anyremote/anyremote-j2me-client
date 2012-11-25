@@ -24,6 +24,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Vector;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.lcdui.Canvas;
@@ -105,6 +107,9 @@ public class ARProtocol {
 	Vector           cmdQueue;
 	Controller       controller;
 	
+	Timer            keepaliveTimer;
+	int              keepaliveTimeout = -1;
+	int              keepaliveCounter = 0;
 	
 	public ARProtocol(Controller ctl) {
                 
@@ -156,15 +161,18 @@ public class ARProtocol {
 			} catch (IOException e) {
 				//System.out.println  ("run() IOException");
 			        //controller.showAlertAsTitle("run() IOException "+e.getMessage());
+				stopKeepaliveTimer();
 				continue;			
 			} catch (InterruptedException e) {
 				//System.out.println  ("run() InterruptedException");
 			        //controller.showAlertAsTitle("run() InterruptedException");
+				stopKeepaliveTimer();
 				throw new RuntimeException("InterruptedException "+e.getMessage());	
 			} catch (Exception e) {
 				//System.out.println  ("run() Exception "+e.getClass().getName()+" "+e.getMessage());
 			        //controller.showAlertAsTitle("run() Exception "+e.getClass().getName());
 			}
+			stopKeepaliveTimer();
 			closeConnection();
 		}
 	}
@@ -893,7 +901,19 @@ public class ARProtocol {
 
 			case CMD_GETPING:
                  		queueCommand("Ping");
-				break;
+
+				if (cmdTokens.size() > 1) {   // get timeout
+					keepaliveTimeout = Integer.parseInt(((String) cmdTokens.elementAt(1)));
+
+					if (keepaliveTimeout > 0) {
+						scheduleKeepaliveTask();
+					}
+				}
+
+				if (keepaliveTimeout > 0) {
+					keepaliveCounter++;
+				}
+			        break;
 
 			case CMD_GETPASS:
 			        String connectionPass = "";
@@ -937,5 +957,38 @@ public class ARProtocol {
 		}
                 //System.out.println  ("Clean up tokens");
 		cmdTokens.removeAllElements();
+	}
+	
+	private void stopKeepaliveTimer() {
+		if (keepaliveTimer != null) {
+			keepaliveTimer.cancel();
+			keepaliveTimer = null;
+		}
+	}
+		
+	private synchronized void scheduleKeepaliveTask() {
+		
+		TimerTask keepaliveCheck = new TimerTask() {
+                    public void run() { keepaliveTask(); }
+                };
+		
+		keepaliveTimer = new Timer();
+		keepaliveTimer.scheduleAtFixedRate(keepaliveCheck, 0, (long) (keepaliveTimeout * 3000)); // x2 is not enough sometimes		
+	}
+	
+	private synchronized void keepaliveTask() {
+
+		if (keepaliveTimeout > 0) {
+			//System.out.println("keepaliveTask test keepalive");
+			if (keepaliveCounter == 0) {
+				//System.out.println("keepaliveTask seems connection is lost, do disconnect");
+				stopKeepaliveTimer();
+				closeConnection();
+			} else {
+				keepaliveCounter = 0;
+			}
+		} else {
+			stopKeepaliveTimer();
+		}
 	}
 }

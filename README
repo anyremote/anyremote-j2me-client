@@ -6,7 +6,7 @@ J2ME client for anyremote - http://anyremote.sourceforge.net/
 
 
 The code is licensed under the GNU Public licence (GPL).
-(C) by Mikhail Fedotov 2008,2009,2010.
+(C) by Mikhail Fedotov 2008-2012
 
 *jar file should be uploaded 
     - to cell phone, which is JSR-82 compatible or 

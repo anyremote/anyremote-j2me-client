@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 MIDlet-Vendor: Mikhail Fedotov
-MIDlet-Version: 4.27
+MIDlet-Version: 4.28
 MicroEdition-Configuration: CLDC-1.0
 MIDlet-1: anyRemote, anyRemote64.png, Controller
 MIDlet-Name: anyRemote
