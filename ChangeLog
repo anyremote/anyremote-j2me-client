@@ -1,3 +1,7 @@
+* Sat Dec 08 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.29
+- Handle new-line character as separator in list commands. Corrected events 
+  at phone call.
+
 * Sun Nov 25 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.28
 - Support Get(ping,timeout) command with keepalive handling. 
 

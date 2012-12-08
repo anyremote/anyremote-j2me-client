@@ -218,7 +218,7 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 			
                         splash.isInitialized = true;
 		} else {
-			protocol.queueCommand("(EndCall)");
+			protocol.queueCommand("EndCall(,)");
 		}
 		
 		                
@@ -674,7 +674,7 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 	}
 
 	public void pauseApp() {
-		protocol.queueCommand("(InCall)");
+		protocol.queueCommand("InCall(,)");
 	}
 
 	public void destroyApp(boolean unconditional) {

@@ -157,6 +157,17 @@ public class ListForm extends CanvasConsumer  {
                 }
         }
 
+	public void addOneToList(String item, boolean useIcons) {
+	
+        	if (!item.equals("") && ! (item.length() == 1 && item.charAt(0) == '\n')) {
+        		if (useIcons) {
+        			panel.addWithIcon(item); 
+        		} else {
+        			panel.add(item); 
+        		}        	
+        	}
+	}
+				
 	public boolean addToList(Vector vR, int start, boolean fullCmd, boolean useIcons) {
         
                 //controller.showAlert("addToList() " +start);  
@@ -172,17 +183,24 @@ public class ListForm extends CanvasConsumer  {
                 	String item = (String) vR.elementAt(idx);
                         if (start == 0 && idx == 0) {
                         	item = bufferedItem + item;
-                        	//System.out.println("ListForm.addToList restore from buffer " + item);
+                        	System.out.println("ListForm.addToList restore from buffer " + item);
                                 bufferedItem = "";
                         }
-                	if (!item.equals("") && ! (item.length() == 1 && item.charAt(0) == '\n')) {
-                        	if (useIcons) {
-                                	panel.addWithIcon(item); 
-                                } else {
-                			panel.add(item); 
-                                }        	
-                	}
-                }
+			
+			int split1 = item.indexOf('\n');
+			int split2 = 0;
+			while(split1 > 0) {
+			
+                                //System.out.println("ListForm.addToList " + item.substring(split2,split1));
+                                addOneToList(item.substring(split2,split1), useIcons);
+ 
+				split2 = split1 + 1;
+				split1 = item.indexOf('\n',split2);
+			}
+			//System.out.println("ListForm.addToList last " + item.substring(split2));
+			addOneToList(item.substring(split2), useIcons);
+			
+		}
                 
                 if (!fullCmd) {
                         bufferedItem = (String) vR.elementAt(end);

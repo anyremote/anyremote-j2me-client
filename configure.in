@@ -23,7 +23,7 @@
 
 AC_PREREQ(2.59)
 
-AC_INIT(anyremote-j2me-client,4.28)
+AC_INIT(anyremote-j2me-client,4.29)
 
 AC_PATH_PROG([JAVAC], [javac], [no])
 AC_PATH_PROG([JAVA],  [java],  [no])
