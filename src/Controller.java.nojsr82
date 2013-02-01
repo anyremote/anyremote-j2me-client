@@ -866,7 +866,7 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 		//	}
                 //        return;
 		} else if (cmd == enterSockAddr) {
-        		setupEField("Address to connect", "Enter address:", "socket://enter.ip.here:port", true);
+        		setupEField("Address to connect", "Enter address:", "socket://192.168.1.1:5197", true);
                 	showScr(EDIT_FORM);
                         return;
 		/*} else if (cmd == enterBTAddr) {
