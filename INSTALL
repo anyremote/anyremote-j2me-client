@@ -5,8 +5,33 @@ Install prerequsites:
 
     Sun WTK  (http://java.sun.com/products/sjwtoolkit/)
     ProGuard (http://proguard.sourceforge.net/)
-	
+
+Latest sources can be retrieved from GIT repository:
+    git clone git://github.com/anyremote/anyremote-j2me-client.git
+
 To install the application, type:
 
         ./configure --prefix=/usr --with-wtk=<path to WTK> --with-proguard=<path to ProGuard>
         su -c "make install"
+
+
+To compile anyremote-j2me-client under Sun WTK ktoolbar GUI:
+
+1. Unzip sources (or retrive them from git) under ~/j2mewtk/2.5.2/apps
+(by default Sun WTK creates j2mewtk directory in user $HOME)
+2. cd anyremote-j2me-client;mkdir bin lib res
+3. cd res;ln -s ../src/128;ln -s ../src/16;ln -s ../src/32;ln -s ../src/48;ln -s ../src/64;ln -s ../src/96
+4. cd -;cd src;ln -s Controller.java.jsr82 Controller.java;ln -s BtComm.java.jsr82 BtComm.java
+5. create bin/anyremote-j2me-client.jad with the following content:
+
+MIDlet-1: anyRemote, anyRemote.png, Controller
+MIDlet-Jar-Size: 69798
+MIDlet-Jar-URL: anyRemote-16.jar
+MIDlet-Name: anyRemote
+MIDlet-Permissions-Opt: javax.microedition.io.Connector.bluetooth.client,javax.microedition.io.Connector.socket,javax.microedition.io.Connector.comm
+MIDlet-Vendor: Mikhail Fedotov
+MIDlet-Version: 0.01
+MicroEdition-Configuration: CLDC-1.0
+MicroEdition-Profile: MIDP-2.0
+
+6. Run ktoolbar, open anyremote-j2me-client project and push "Build" button.
