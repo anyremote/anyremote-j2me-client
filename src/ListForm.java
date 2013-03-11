@@ -42,7 +42,7 @@ public class ListForm extends CanvasConsumer  {
                 
                 bufferedItem = "";
                 
-                panel = new CanvasPanel(controller, 0,0,0,255,255,255,0,0,0, Font.SIZE_MEDIUM, CanvasPanel.LIST);
+                panel = new CanvasPanel(controller, 0x000000, 0xFFFFFF, 0x000000, Font.SIZE_MEDIUM, CanvasPanel.LIST);
 		caption = "";
 				
 		b = new Command("Back", Command.SCREEN, 4);
@@ -326,13 +326,13 @@ public class ListForm extends CanvasConsumer  {
 		synchronized (controller.cScreen.drawMutex) {
 		
 			if (controller.cScreen.popupText.length() > 0) {
-				controller.cScreen.drawPopup(panel.bg[0], panel.bg[1], panel.bg[2], panel.fg[0], panel.fg[1], panel.fg[2]);
+				controller.cScreen.drawPopup(panel.fg, panel.bg);
 				return;
 			}
 
 			// draw bg
         		controller.cScreen.gr.setClip(0, 0, controller.cScreen.CW, controller.cScreen.CH);
-        		controller.cScreen.gr.setColor(panel.bg[0], panel.bg[1], panel.bg[2]);
+        		controller.cScreen.gr.setColor(panel.bg);
 			controller.cScreen.gr.fillRect(0, 0, controller.cScreen.CW, controller.cScreen.CH);
 		        
 			if (controller.cScreen.isFullscreen) {
@@ -340,7 +340,7 @@ public class ListForm extends CanvasConsumer  {
                         	
                 		// draw caption
         			controller.cScreen.gr.setFont(panel.cpFont);
-	        		controller.cScreen.gr.setColor(panel.fg[0], panel.fg[1], panel.fg[2]);
+	        		controller.cScreen.gr.setColor(panel.fg);
 	        		controller.cScreen.gr.drawString(caption, controller.cScreen.CW>>1, 1, Graphics.TOP|Graphics.HCENTER);
                 		controller.cScreen.gr.drawLine(0,FH+2,controller.cScreen.CW,FH+2);
 			}
@@ -351,7 +351,7 @@ public class ListForm extends CanvasConsumer  {
         }      
             
 	public void fullscreenBkgr() {
-        	controller.cScreen.flushFullScreen(panel.bg[0], panel.bg[1], panel.bg[2]);
+        	controller.cScreen.flushFullScreen(panel.bg);
 	}
 
 
@@ -360,7 +360,7 @@ public class ListForm extends CanvasConsumer  {
                 
                 int FH = panel.cpFont.getHeight();
                 
-                controller.cScreen.setTVisuals(panel.cpFont, 80, panel.bg[0], panel.bg[1], panel.bg[2], panel.fg[0], panel.fg[1], panel.fg[2], Graphics.LEFT, true);
+                controller.cScreen.setTVisuals(panel.cpFont, 80, panel.bg, panel.fg, Graphics.LEFT, true);
 		
 		int xStart = (controller.cScreen.isFullscreen ? FH+3 : 0);
                 panel.setSize(2,controller.cScreen.CW-4,xStart,controller.cScreen.CH-xStart);

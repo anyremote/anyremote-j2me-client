@@ -56,8 +56,8 @@ public class TextScreen extends CanvasConsumer {
                 wrap	= true;
                 caption = "";
                 
-                panel   = new CanvasPanel(ctl, 0,0,0,255,255,255,0,0,0, Font.SIZE_SMALL, CanvasPanel.TEXT);
-
+                panel   = new CanvasPanel(ctl, 0x000000, 0xFFFFFF, 0x000000, Font.SIZE_SMALL, CanvasPanel.TEXT);
+ 
 	}
 	
 	public void cleanUp() {
@@ -258,7 +258,7 @@ public class TextScreen extends CanvasConsumer {
 			synchronized (controller.cScreen.drawMutex) {
                         
 				if (controller.cScreen.popupText.length() > 0) {
-					controller.cScreen.drawPopup(panel.bg[0], panel.bg[1], panel.bg[2], panel.fg[0], panel.fg[1], panel.fg[2]);
+					controller.cScreen.drawPopup(panel.fg, panel.bg);
 					return;
 				}
 				
@@ -278,11 +278,11 @@ public class TextScreen extends CanvasConsumer {
                                 		c += "/" + String.valueOf(panel.data.size());
                                 	}
 					// draw bg
-        				controller.cScreen.gr.setColor(panel.bg[0], panel.bg[1], panel.bg[2]);
+        				controller.cScreen.gr.setColor(panel.bg);
 					controller.cScreen.gr.fillRect(0, 0, controller.cScreen.CW, h);
                                 
 					// draw caption
-					controller.cScreen.gr.setColor(panel.fg[0], panel.fg[1], panel.fg[2]);
+					controller.cScreen.gr.setColor(panel.fg);
 					controller.cScreen.gr.drawString(c, controller.cScreen.CW>>1, 1, Graphics.TOP|Graphics.HCENTER);
                 			controller.cScreen.gr.drawLine(0,FH+2,controller.cScreen.CW,FH+2);
 				}
@@ -381,7 +381,7 @@ public class TextScreen extends CanvasConsumer {
 	}
         
 	public void fullscreenBkgr() {
-        	controller.cScreen.flushFullScreen(panel.bg[0], panel.bg[1], panel.bg[2]);
+        	controller.cScreen.flushFullScreen(panel.bg);
 	}
 
         public void showScreen() {

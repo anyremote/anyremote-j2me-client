@@ -42,9 +42,9 @@ public class CanvasPanel {
 	static final int ICON_SIZE = 16;
 	
         int X, Y, W, H;
-	int[]  bg;
-	int[]  fg;
-	int[]  sl;
+	int    bg;
+	int    fg;
+	int    sl;
 	int    idxSelect;
 	int    idxStart;
 	int    idxEnd;
@@ -67,40 +67,25 @@ public class CanvasPanel {
 
         Controller controller;
         
-	public CanvasPanel(Controller ctl,
-                           int fgR, int fgG, int fgB, 
-                           int bgR, int bgG, int bgB, 
-                           int slR, int slG, int slB,
-                           int fsz, int mode) {
+	public CanvasPanel(Controller ctl, int fg, int bg, int sl, int fsz, int mode) {
                 
                 Font fn = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, fsz);  
-                init(ctl, fgR, fgG, fgB, bgR, bgG, bgB, slR, slG, slB, fn, mode);        
+                init(ctl, fg, bg, sl, fn, mode);        
 	}
         
-	public CanvasPanel(Controller ctl,
-                           int fgR, int fgG, int fgB, 
-                           int bgR, int bgG, int bgB, 
-                           int slR, int slG, int slB,
-                           Font fn, int mode) {
+	public CanvasPanel(Controller ctl, int fg, int bg, int sl, Font fn, int mode) {
  
- 		init(ctl, fgR, fgG, fgB, bgR, bgG, bgB, slR, slG, slB, fn, mode);
+ 		init(ctl, fg, bg, sl, fn, mode);
  	}
         
- 	public void init(Controller ctl,
-                    int fgR, int fgG, int fgB, 
-                    int bgR, int bgG, int bgB, 
-                    int slR, int slG, int slB,
-                    Font fn, int mode) {
+ 	public void init(Controller ctl, int fgc, int bgc, int slc, Font fn, int mode) {
 
                 controller = ctl;
- 		fg = new int[3];
-		bg = new int[3];
- 		sl = new int[3];
-               
-                fg[0] = fgR; bg[0] = bgR; sl[0] = slR;
-                fg[1] = fgG; bg[1] = bgG; sl[1] = slG;
-                fg[2] = fgB; bg[2] = bgB; sl[2] = slB;
-
+                
+                fg = fgc;
+                bg = bgc;
+                sl = slc;
+ 
                 cpFont 	   = fn;
                 useMode    = mode;
                 data       = new Vector();
@@ -129,27 +114,19 @@ public class CanvasPanel {
 			return;
 		}
 		
-		int[] RGB = controller.cScreen.parseColor((String) vR.elementAt(2),
-		                                          (String) vR.elementAt(3),
-							  (String) vR.elementAt(4));
-                
-                if (RGB[0] == -1) {  // Error
-                	//System.out.println("setColor() - fails to parse");
-                	return;
-                }
-                
+		int color;
+		try {
+			color = controller.cScreen.parseColor(2, vR);
+                } catch (Exception e) {
+			return;
+		}
+ 		
                 if (what == CanvasScreen.BG) {
-			bg[0] = RGB[0];
-			bg[1] = RGB[1];
-			bg[2] = RGB[2];
+			bg = color;
                 } else if (what == CanvasScreen.FG){	
-			fg[0] = RGB[0];
-			fg[1] = RGB[1];
-			fg[2] = RGB[2];
+			fg = color;
           	} else if (what == CanvasScreen.SL_FG){
-			sl[0] = RGB[0];
-			sl[1] = RGB[1];
-			sl[2] = RGB[2];
+			sl = color;
          	}
         }
 
@@ -431,7 +408,7 @@ public class CanvasPanel {
 			FH = ICON_SIZE;
                 }
 
-        	controller.cScreen.gr.setColor(bg[0], bg[1], bg[2]);
+        	controller.cScreen.gr.setColor(bg);
 		controller.cScreen.gr.fillRect(X, Y, W, H);
                 
                 // Draw lines, one by one
@@ -470,9 +447,9 @@ public class CanvasPanel {
                                 //System.out.println("CanvasPanel.draw isCursor && useTicker");
                         	if (useMode == FMGR) {
                                 	if (isSel == -1) {
-                        			controller.cScreen.setTVisuals(cpFont, 80, bg[0], bg[1], bg[2], fg[0], fg[1], fg[2], Graphics.LEFT, false); //true);
+                        			controller.cScreen.setTVisuals(cpFont, 80, bg, fg, Graphics.LEFT, false); //true);
                         		} else {
-                                		controller.cScreen.setTVisuals(cpFont, 80, bg[0], bg[1], bg[2], sl[0], sl[1], sl[2], Graphics.LEFT, false); //true);
+                                		controller.cScreen.setTVisuals(cpFont, 80, bg, sl, Graphics.LEFT, false); //true);
                                 	}
                                 }
                                 
@@ -480,14 +457,11 @@ public class CanvasPanel {
 				controller.cScreen.setTParams(controller.cScreen.removeSpecials((String) data.elementAt(idx)), xStart, yStart, xWidth);
                 	} else {
                                 //System.out.println("CanvasPanel.draw ....");
-                        	if (isSel == -1) {
-					controller.cScreen.gr.setColor(fg[0], fg[1], fg[2]);
-                                } else {
-                                	controller.cScreen.gr.setColor(sl[0], sl[1], sl[2]);
-                                }
+                        	controller.cScreen.gr.setColor((isSel == -1 ? fg : bg));
+ 
                                 if (isCursor) {
                                 	controller.cScreen.gr.fillRect(xStart, drawY, xWidth, FH);
-                                        controller.cScreen.gr.setColor(bg[0], bg[1], bg[2]);
+                                        controller.cScreen.gr.setColor(bg);
                                 }
 				
 				//System.out.println("CanvasPanel.draw Y="+yStart);

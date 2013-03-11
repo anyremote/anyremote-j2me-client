@@ -68,8 +68,8 @@ public class FileManager extends CanvasConsumer  {
                 curPanel   = LEFT;                
                 
                 panels        = new CanvasPanel[2];
-                panels[LEFT]  = new CanvasPanel(ctl, 255,255,255,0,0,255,255,255,0, Font.SIZE_SMALL, CanvasPanel.FMGR);
-                panels[RIGHT] = new CanvasPanel(ctl, 255,255,255,0,0,255,255,255,0, Font.SIZE_SMALL, CanvasPanel.FMGR);
+                panels[LEFT]  = new CanvasPanel(ctl, 0xFFFFFF, 0x0000FF, 0xFFFF00, Font.SIZE_SMALL, CanvasPanel.FMGR);
+                panels[RIGHT] = new CanvasPanel(ctl, 0xFFFFFF, 0x0000FF, 0xFFFF00, Font.SIZE_SMALL, CanvasPanel.FMGR);
                 
                 panelStream   = LEFT;
                 bufferedItem  = "";
@@ -211,7 +211,7 @@ public class FileManager extends CanvasConsumer  {
 		
 		try {
 			if (controller.cScreen.popupText.length() > 0) {
-				controller.cScreen.drawPopup(0, 0, 255, 255, 255, 255);
+				controller.cScreen.drawPopup(0xFFFFFF, 0x0000FF);
 				return;
 			}
 			
@@ -226,12 +226,12 @@ public class FileManager extends CanvasConsumer  {
 
 				// draw bg
         			controller.cScreen.gr.setClip (0, 0, controller.cScreen.CW, controller.cScreen.CH);
-        			controller.cScreen.gr.setColor(0, 0, 255);
+        			controller.cScreen.gr.setColor(0x0000FF);
 				controller.cScreen.gr.fillRect(0, 0, controller.cScreen.CW, controller.cScreen.CH);
 			
 				// draw caption
 				//String cap = "File Manager";
-                        	controller.cScreen.gr.setColor(255, 255, 255);
+                        	controller.cScreen.gr.setColor(0xFFFFFF);
 				if (controller.cScreen.isFullscreen) {
 					controller.cScreen.gr.drawString("File Manager", W2, 1, Graphics.TOP|Graphics.HCENTER);
 				}
@@ -401,7 +401,7 @@ public class FileManager extends CanvasConsumer  {
 	}
         
 	public void fullscreenBkgr() {
-        	controller.cScreen.flushFullScreen(0,0,255);
+        	controller.cScreen.flushFullScreen(0x0000FF);
 	}
 
         public void showScreen() {

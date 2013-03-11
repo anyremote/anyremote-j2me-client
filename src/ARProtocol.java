@@ -783,7 +783,7 @@ public class ARProtocol {
 				break;*/
 				
 			case CMD_BG:
-          			controller.cScreen.cf.setColor(CanvasScreen.FG, cmdTokens);
+          			controller.cScreen.cf.setColor(CanvasScreen.BG, cmdTokens);
 				break; 
 			
 			case CMD_CAPTION:
@@ -791,12 +791,14 @@ public class ARProtocol {
 				break; 
 				    
 			case CMD_EFIELD:
-				controller.setupEField((String) cmdTokens.elementAt(1),(String) cmdTokens.elementAt(2),(String) cmdTokens.elementAt(3),false);
-                         	controller.showScr(Controller.EDIT_FORM);
+			        if (cmdTokens.size() > 3) {
+					controller.setupEField((String) cmdTokens.elementAt(1),(String) cmdTokens.elementAt(2),(String) cmdTokens.elementAt(3),false);
+                         		controller.showScr(Controller.EDIT_FORM);
+				}
 				break; 
 				   
 			case CMD_FG:
-          			controller.cScreen.cf.setColor(CanvasScreen.BG, cmdTokens);
+          			controller.cScreen.cf.setColor(CanvasScreen.FG, cmdTokens);
 				break;  
 				     
 			case CMD_FMAN:

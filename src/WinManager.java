@@ -182,13 +182,13 @@ public class WinManager extends CanvasConsumer {
                 	synchronized (controller.cScreen.drawMutex) {
                         
 				if (controller.cScreen.popupText.length() > 0) {
-					controller.cScreen.drawPopup(0, 0, 0, 255, 255, 255);
+					controller.cScreen.drawPopup(0xFFFFFF, 0x000000);
 					return;
 				}
 				
 				// draw all in black
 				controller.cScreen.gr.setClip(0, 0, controller.cScreen.CW, controller.cScreen.CH);
-        			controller.cScreen.gr.setColor(0, 0, 0);
+        			controller.cScreen.gr.setColor(0x000000);
 				controller.cScreen.gr.fillRect(0, 0, controller.cScreen.CW, controller.cScreen.CH);
                                 
 				// draw screen image in center
@@ -197,12 +197,12 @@ public class WinManager extends CanvasConsumer {
 				}
                                 
                                 if (useCursor) {	// draw cursor
- 					controller.cScreen.gr.setColor(255, 255, 255);
+ 					controller.cScreen.gr.setColor(0xFFFFFF);
                                 	controller.cScreen.gr.drawLine (curX-curSize, curY-1, curX+curSize, curY-1);
                                 	controller.cScreen.gr.drawLine (curX-curSize, curY+1, curX+curSize, curY+1);
                                 	controller.cScreen.gr.drawLine (curX-1, curY-curSize, curX-1, curY+curSize);
                                 	controller.cScreen.gr.drawLine (curX+1, curY-curSize, curX+1, curY+curSize);
-					controller.cScreen.gr.setColor(0, 0, 0);
+					controller.cScreen.gr.setColor(0x000000);
                                 	controller.cScreen.gr.drawLine (curX-curSize, curY, curX+curSize, curY);
                                 	controller.cScreen.gr.drawLine (curX, curY-curSize, curX, curY+curSize);
 				}
@@ -335,7 +335,7 @@ public class WinManager extends CanvasConsumer {
 	}
         
 	public void fullscreenBkgr() {
-        	controller.cScreen.flushFullScreen(0, 0, 0);
+        	controller.cScreen.flushFullScreen(0x000000);
 	}
                 
 	public void showScreen() {

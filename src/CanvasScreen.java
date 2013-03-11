@@ -83,8 +83,8 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
 	int   	W;        
         Font    tickFont;
 	int   	align;
-        int[] 	bg;
-        int[] 	fg;
+        int	bg;
+        int 	fg;
         String 	text;
  	int     xTickerStart;
 	int     xTickerLen;
@@ -133,8 +133,6 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
                 //fSize 		= Font.SIZE_SMALL;	
                 align 		= Graphics.LEFT;	
                 X		= -1;			// Show we not yet initialized or to show drawing is not needed
-		fg 		= new int[3];
-		bg 		= new int[3];
                 text 		= "";
 		drawMutex 	= new Integer(0);
                 // ticker-related initialization 
@@ -360,16 +358,16 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
         }
 	
 	// draw popup message
-        public void drawPopup(int rb, int gb, int bb, int rf, int gf, int bf) {
+	public void drawPopup(int fg, int bg) {
 	
                 gr.setClip(0, 0, getWidth(), getHeight());
-        	gr.setColor(rb, gb, bb);
+        	gr.setColor(bg);
 		gr.fillRect(0, 0, getWidth(), getHeight());
 		
 		Font fnt = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_LARGE);
 		int FH = fnt.getHeight();
 		
-		gr.setColor(rf, gf, bf);
+		gr.setColor(fg);
 		gr.drawString(popupText.toString(), CW>>1, CH>>1, Graphics.TOP|Graphics.HCENTER);
 		
 		flushGraphics();
@@ -515,29 +513,25 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
                 }
                 return fn;
         }
-        
-	public int[] parseColor(String r, String g, String b) {
-		int[] RGB = new int[3];
-                try {
-        		RGB[0] = Integer.parseInt(r);
-        		RGB[1] = Integer.parseInt(g);
-        		RGB[2] = Integer.parseInt(b);
-                        
-                        if (RGB[0]<0   || RGB[1]<0   || RGB[2]<0 ||
-                            RGB[0]>255 || RGB[1]>255 || RGB[2]>255) {
-                         	RGB[0] = -1;   
-                        }
-		} catch (Exception e) { 
-			//controller.showAlert("Exception in parseColor() " + e.getMessage());
-                        RGB[0] = -1;
-		}
-                return RGB;
+
+	public int parseColor(int first, Vector items) {
+		
+                int r = Integer.parseInt((String) items.elementAt(first));
+		first++;
+                int g = Integer.parseInt((String) items.elementAt(first));
+		first++;
+                int b = Integer.parseInt((String) items.elementAt(first));
+		
+		//int c = ((r & 0xFF) << 4) + ((g & 0xFF) << 2) + (b & 0xFF);
+		//System.out.println("parseColor "+c+" " + ((r & 0xFF) << 16) + " " + ((g & 0xFF) << 8) + " " + (b & 0xFF));
+                
+                return ((r & 0xFF) << 16) + ((g & 0xFF) << 8) + (b & 0xFF);
 	}
         
-	public void flushFullScreen(int r, int g, int b) { 
+	public void flushFullScreen(int c) { 
         	// it should be in fullscreen mode currently
                 gr.setClip(0, 0, getWidth(), getHeight());
-        	gr.setColor(r, g, b);
+        	gr.setColor(c);
 		gr.fillRect(0, 0, getWidth(), getHeight());
 		flushGraphics();
 	}
@@ -674,7 +668,7 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
         // ticker part
         //
 	
-        public void setTVisuals(/*int fsz*/Font ff, int tm, int f0, int f1, int f2, int g0, int g1, int g2, int al, boolean resetStart) {
+        public void setTVisuals(/*int fsz*/Font ff, int tm, int fgc, int bgc, int al, boolean resetStart) {
         	//System.out.println("setTVisuals "+f0+" "+f1+" "+f2+" "+g0+" "+g1+" "+g2+" "+al);
         	
                 tickFont     = ff;
@@ -684,9 +678,8 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
 		if (resetStart) {
         		xTickerStart = 0;
         	}
-        	fg[0] = f0; bg[0] = g0;
-        	fg[1] = f1; bg[1] = g1;
-        	fg[2] = f2; bg[2] = g2;
+        	fg = fgc;
+        	bg = bgc;
         }
 
 	public void setTParams(String s, int x, int y, int w) {
@@ -777,9 +770,9 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
 		
 				gr.setClip(X, Y, W, FHTicker);
 
-                		gr.setColor(bg[0], bg[1], bg[2]);    
+                		gr.setColor(bg);    
                 		gr.fillRect(X, Y, W, FHTicker); 		     // Erase previous
- 				gr.setColor(fg[0], fg[1], fg[2]);    
+ 				gr.setColor(fg);    
                 		gr.drawString(text, xTxt, Y, Graphics.TOP|align);    // Draw shifted
 				
 				gr.setClip(x, y, w, h);

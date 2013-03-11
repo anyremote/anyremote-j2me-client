@@ -74,8 +74,8 @@ public class ControlForm extends CanvasConsumer {
         
         int   xCorner;
         int   yCorner;
-        int[] bg;
-        int[] fg;
+        int   bg;
+        int   fg;
 	
         String[] infoItem;
         int[]	 yInfo;
@@ -108,12 +108,8 @@ public class ControlForm extends CanvasConsumer {
  		//useCover    = false;
                 //volume      = 0;
 		
-		fg = new int[3];
-		bg = new int[3];
-		for (int n=0; n<3; ++n) {
-			fg[n] = 255;
-			//bg[n] = 0; redundant init
-		}
+		fg = 0xFFFFFF;
+		bg = 0x000000;
 		
 		icons      = new Image[NUM_ICONS];
 		iconNames  = new String[NUM_ICONS];
@@ -237,21 +233,18 @@ public class ControlForm extends CanvasConsumer {
 			return;
 		}
         
-		int[] RGB = controller.cScreen.parseColor((String) cmdTokens.elementAt(1),
-		                                          (String) cmdTokens.elementAt(2),
-							  (String) cmdTokens.elementAt(3));
+		int color;
+		try {
+			color = controller.cScreen.parseColor(1, cmdTokens);
+                } catch (Exception e) {
+			return;
+		}
+                System.out.println("setColor "+what+" " + color);
                 
-                if (RGB[0] == -1) {  // Error
-                	return;
-                }
-                if (what == CanvasScreen.BG) {
-			bg[0] = RGB[0];
-			bg[1] = RGB[1];
-			bg[2] = RGB[2];
+		if (what == CanvasScreen.BG) {
+			bg = color;
                 } else {	// FG
-			fg[0] = RGB[0];
-			fg[1] = RGB[1];
-			fg[2] = RGB[2];
+			fg = color;
                 }
 		if (controller.cScreen.currentScreen == this) {
 			showScreen();
@@ -571,18 +564,18 @@ public class ControlForm extends CanvasConsumer {
                 	synchronized (controller.cScreen.drawMutex) {
 			
 			        if (controller.cScreen.popupText.length() > 0) {
-					controller.cScreen.drawPopup(bg[0], bg[1], bg[2], fg[0], fg[1], fg[2]);
+					controller.cScreen.drawPopup(fg, bg);
 					return;
 				}
                         
 				controller.cScreen.gr.setClip(0, 0, controller.cScreen.CW, controller.cScreen.CH);
-        			controller.cScreen.gr.setColor(bg[0], bg[1], bg[2]);
+        			controller.cScreen.gr.setColor(bg);
 				controller.cScreen.gr.fillRect(0, 0, controller.cScreen.CW, controller.cScreen.CH);
                                 
                                 controller.cScreen.gr.setFont(cfFont);
 
                         	if (controller.cScreen.isFullscreen) {
-                    			controller.cScreen.gr.setColor(fg[0], fg[1], fg[2]);
+                    			controller.cScreen.gr.setColor(fg);
 	            			controller.cScreen.gr.drawString(captionItem, controller.cScreen.CW>>1, 1, Graphics.TOP|Graphics.HCENTER);
                     			controller.cScreen.gr.drawLine(0,yCaption-1,controller.cScreen.CW,yCaption-1);
                         	} 
@@ -610,7 +603,7 @@ public class ControlForm extends CanvasConsumer {
                         		drawVolume();
                         	}
                                 
-	    			controller.cScreen.gr.setColor(fg[0], fg[1], fg[2]);
+	    			controller.cScreen.gr.setColor(fg);
 				controller.cScreen.gr.drawString(statusItem, controller.cScreen.CW>>1, getStatusY(), Graphics.TOP|Graphics.HCENTER);
                                 
                                 if (useTicker) {
@@ -642,7 +635,7 @@ public class ControlForm extends CanvasConsumer {
             					delta  = (endTitleY - startTitleY - maxLines*cfFont.getHeight())/(maxLines + 1);
 					}
                         
-	    				controller.cScreen.gr.setColor(fg[0], fg[1], fg[2]);
+	    				controller.cScreen.gr.setColor(fg);
 
 					for (int n=0; n<nInfoItems; ++n) {
 						yInfo[n] = startTitleY + delta*(n+1) + cfFont.getHeight()*n;
@@ -670,7 +663,7 @@ public class ControlForm extends CanvasConsumer {
 		if (controller.alphaBlending > 2) {
                 	controller.cScreen.gr.drawImage(clickIcon, x, y, Graphics.LEFT|Graphics.TOP);
 		} else {
-	        	controller.cScreen.gr.setColor(fg[0], fg[1], fg[2]);
+	        	controller.cScreen.gr.setColor(fg);
                 	controller.cScreen.gr.drawLine(x,         y,         x + icSize, y);
                 	controller.cScreen.gr.drawLine(x,         y,         x,         y + icSize);
                 	controller.cScreen.gr.drawLine(x + icSize, y,         x + icSize, y + icSize);
@@ -691,13 +684,13 @@ public class ControlForm extends CanvasConsumer {
                 }
                 int xl = controller.cScreen.CW-2*xs;
         
-                controller.cScreen.gr.setColor(fg[0], fg[1], fg[2]);
+                controller.cScreen.gr.setColor(fg);
 	        controller.cScreen.gr.drawRect(xs,y1,xl,6);
         
-                controller.cScreen.gr.setColor(bg[0], bg[1], bg[2]);
+                controller.cScreen.gr.setColor(bg);
 	        controller.cScreen.gr.fillRect(xs+2,y1+2,xl-4,3);
         
-                controller.cScreen.gr.setColor(fg[0], fg[1], fg[2]);
+                controller.cScreen.gr.setColor(fg);
                 controller.cScreen.gr.fillRect(xs+2,y1+2,((xl-4)*volume)/100,3);
         }
 
@@ -1144,7 +1137,7 @@ public class ControlForm extends CanvasConsumer {
 	}
 	
 	public void fullscreenBkgr() {
-        	controller.cScreen.flushFullScreen(bg[0], bg[1], bg[2]);
+        	controller.cScreen.flushFullScreen(bg);
 	}
 	
 	public void setData(Vector dataIn, int stage) {
@@ -1216,7 +1209,7 @@ public class ControlForm extends CanvasConsumer {
  			setInfoData();
 		}		
 		if (useTicker) {
-			controller.cScreen.setTVisuals(cfFont, 15, fg[0], fg[1], fg[2], bg[0], bg[1], bg[2], Graphics.HCENTER, true);
+			controller.cScreen.setTVisuals(cfFont, 15, fg, bg, Graphics.HCENTER, true);
 		}
 		
 		if (controller.nokiaFixRepaint2) {
