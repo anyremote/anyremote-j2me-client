@@ -228,10 +228,6 @@ public class ControlForm extends CanvasConsumer {
 	}
 	
 	public void setColor(int what, Vector cmdTokens) {
-	
-	        if (cmdTokens.size() < 4) {
-			return;
-		}
         
 		int color;
 		try {

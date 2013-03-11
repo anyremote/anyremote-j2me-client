@@ -110,10 +110,6 @@ public class CanvasPanel {
         }
 
         public void setColor(int what, Vector vR) {
-	        if (vR.size() < 5) {
-			return;
-		}
-		
 		int color;
 		try {
 			color = controller.cScreen.parseColor(2, vR);

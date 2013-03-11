@@ -516,6 +516,14 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
 
 	public int parseColor(int first, Vector items) {
 		
+		if (items.size() < first + 3) {
+			String hex = (String) items.elementAt(first);
+			if (hex.charAt(0) == '#') {
+				hex = hex.substring(1);
+			}
+			return Integer.parseInt(hex, 16);
+		}
+		
                 int r = Integer.parseInt((String) items.elementAt(first));
 		first++;
                 int g = Integer.parseInt((String) items.elementAt(first));
