@@ -71,9 +71,16 @@ public class ListForm extends CanvasConsumer  {
 			controller.showScr(Controller.CONTROL_FORM);
                         return;
                                 
+                } else if (oper.equals("caption")) {
+ 		
+                	caption = (String) vR.elementAt(2);
+			if (controller.cScreen.currentScreen == this) {
+				showScreen();
+			}
+
                 } else if (oper.equals("fg")) {
  		
-                	panel.setColor(CanvasScreen.FG,(String) vR.elementAt(2),(String) vR.elementAt(3),(String) vR.elementAt(4));
+                	panel.setColor(CanvasScreen.FG, vR);
 			if (controller.cScreen.currentScreen == this) {
 				showScreen();
 			}
@@ -81,7 +88,7 @@ public class ListForm extends CanvasConsumer  {
                 
                 } else if (oper.equals("bg")) {
  		
-                	panel.setColor(CanvasScreen.BG,(String) vR.elementAt(2),(String) vR.elementAt(3),(String) vR.elementAt(4));
+                	panel.setColor(CanvasScreen.BG, vR);
 			if (controller.cScreen.currentScreen == this) {
 				showScreen();
 			}

@@ -225,12 +225,21 @@ public class ControlForm extends CanvasConsumer {
  		if (controller.cScreen.currentScreen == this) {
 			showScreen();
 		}
-               //controller.showScr(Controller.CONTROL_FORM);
- 	}
+  	}
 	 
-	public void setColor(int what, String r,String g, String b) {
+	public void setCaption(String c) {
+		captionItem = c;
+	}
+	
+	public void setColor(int what, Vector cmdTokens) {
+	
+	        if (cmdTokens.size() < 4) {
+			return;
+		}
         
-		int[] RGB = controller.cScreen.parseColor(r,g,b);
+		int[] RGB = controller.cScreen.parseColor((String) cmdTokens.elementAt(1),
+		                                          (String) cmdTokens.elementAt(2),
+							  (String) cmdTokens.elementAt(3));
                 
                 if (RGB[0] == -1) {  // Error
                 	return;
@@ -247,7 +256,6 @@ public class ControlForm extends CanvasConsumer {
 		if (controller.cScreen.currentScreen == this) {
 			showScreen();
 		}
-                //controller.showScr(Controller.CONTROL_FORM);
 	}
 
 	public void resetIconSize(int sz, boolean reload) {

@@ -2,7 +2,7 @@
 // anyRemote java client
 // a bluetooth remote for your PC.
 //
-// Copyright (C) 2006-2012 Mikhail Fedotov <anyremote@mail.ru>
+// Copyright (C) 2006-2013 Mikhail Fedotov <anyremote@mail.ru>
 // 
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -38,26 +38,27 @@ public class ARProtocol {
 
 	static final int CMD_NO       	= 0;	// commmands
 	static final int CMD_BG     	= 1;
-	static final int CMD_EFIELD     = 2;
-	static final int CMD_FG     	= 3;
-	static final int CMD_FMAN     	= 4;
-	static final int CMD_FONT     	= 5;
-	static final int CMD_FSCREEN    = 6;
-	static final int CMD_ICONLIST 	= 7;
-	static final int CMD_ICONS      = 8;
-	static final int CMD_LIST     	= 9;
-	static final int CMD_MENU     	= 10;
-	static final int CMD_PARAM      = 11;
-	static final int CMD_REPAINT    = 12;
-	static final int CMD_LAYOUT     = 13;
-	static final int CMD_STATUS     = 14;
-	static final int CMD_TEXT     	= 15;
-	static final int CMD_TITLE      = 16;
-	static final int CMD_IMAGE  	= 17;
-	static final int CMD_VIBRATE    = 18;
-	static final int CMD_VOLUME     = 19;
-	static final int CMD_COVER      = 20;
-	static final int CMD_POPUP      = 21;
+	static final int CMD_CAPTION    = 2;
+	static final int CMD_EFIELD     = 3;
+	static final int CMD_FG     	= 4;
+	static final int CMD_FMAN     	= 5;
+	static final int CMD_FONT     	= 6;
+	static final int CMD_FSCREEN    = 7;
+	static final int CMD_ICONLIST 	= 8;
+	static final int CMD_ICONS      = 9;
+	static final int CMD_LIST     	= 10;
+	static final int CMD_MENU     	= 11;
+	static final int CMD_PARAM      = 12;
+	static final int CMD_REPAINT    = 13;
+	static final int CMD_LAYOUT     = 14;
+	static final int CMD_STATUS     = 15;
+	static final int CMD_TEXT     	= 16;
+	static final int CMD_TITLE      = 17;
+	static final int CMD_IMAGE  	= 18;
+	static final int CMD_VIBRATE    = 19;
+	static final int CMD_VOLUME     = 20;
+	static final int CMD_COVER      = 21;
+	static final int CMD_POPUP      = 22;
 	
 	static final int CMD_GETSCRSIZE = 51;
 	static final int CMD_GETPLTF    = 52;
@@ -183,6 +184,8 @@ public class ARProtocol {
 		
 		if (header.equals("Set(bg")) {
 			return CMD_BG;
+		} else if (header.equals("Set(caption")) {
+			return CMD_CAPTION;
 		} else if (header.equals("Set(editfield")) {
 			return CMD_EFIELD;
 		} else if (header.equals("Set(fg")) {
@@ -780,8 +783,11 @@ public class ARProtocol {
 				break;*/
 				
 			case CMD_BG:
-          			controller.cScreen.cf.setColor(CanvasScreen.FG,
-					(String) cmdTokens.elementAt(1),(String) cmdTokens.elementAt(2),(String) cmdTokens.elementAt(3));
+          			controller.cScreen.cf.setColor(CanvasScreen.FG, cmdTokens);
+				break; 
+			
+			case CMD_CAPTION:
+          			controller.cScreen.cf.setCaption((String) cmdTokens.elementAt(1));
 				break; 
 				    
 			case CMD_EFIELD:
@@ -790,8 +796,7 @@ public class ARProtocol {
 				break; 
 				   
 			case CMD_FG:
-          			controller.cScreen.cf.setColor(CanvasScreen.BG,
-					(String) cmdTokens.elementAt(1),(String) cmdTokens.elementAt(2),(String) cmdTokens.elementAt(3));
+          			controller.cScreen.cf.setColor(CanvasScreen.BG, cmdTokens);
 				break;  
 				     
 			case CMD_FMAN:

@@ -124,9 +124,14 @@ public class CanvasPanel {
                 H = h;
         }
 
-        public void setColor(int what, String r, String g, String b) {
-                //System.out.println("setColor() "+r+" "+g+" "+b);
-		int[] RGB = controller.cScreen.parseColor(r,g,b);
+        public void setColor(int what, Vector vR) {
+	        if (vR.size() < 5) {
+			return;
+		}
+		
+		int[] RGB = controller.cScreen.parseColor((String) vR.elementAt(2),
+		                                          (String) vR.elementAt(3),
+							  (String) vR.elementAt(4));
                 
                 if (RGB[0] == -1) {  // Error
                 	//System.out.println("setColor() - fails to parse");
