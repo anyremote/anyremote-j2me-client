@@ -1,3 +1,6 @@
+* Wed Mar 13 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.30
+- Support for Set(*color,#XXXXXX) syntax and Set(*caption...) command.
+
 * Sat Dec 08 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.29
 - Handle new-line character as separator in list commands. Corrected events 
   at phone call.
