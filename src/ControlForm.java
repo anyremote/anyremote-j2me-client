@@ -224,7 +224,12 @@ public class ControlForm extends CanvasConsumer {
   	}
 	 
 	public void setCaption(String c) {
+	        //System.out.println("setCaption "+c);
 		captionItem = c;
+		controller.cScreen.setTitle(captionItem);
+		if (controller.cScreen.isFullscreen) {
+			showScreen();
+		}
 	}
 	
 	public void setColor(int what, Vector cmdTokens) {

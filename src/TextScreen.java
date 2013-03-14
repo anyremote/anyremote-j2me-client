@@ -195,10 +195,7 @@ public class TextScreen extends CanvasConsumer {
                 } else if (oper.equals("caption")) {
                 
                 	panel.setColor(CanvasScreen.FG, vR);
-			if (controller.cScreen.currentScreen == this) {
-				showScreen();
-			}
-            	        return;   // do not switch to text form
+			showScreen();
                 
 		} else if (oper.equals("fg")) {
                 

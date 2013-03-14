@@ -74,9 +74,7 @@ public class ListForm extends CanvasConsumer  {
                 } else if (oper.equals("caption")) {
  		
                 	caption = (String) vR.elementAt(2);
-			if (controller.cScreen.currentScreen == this) {
-				showScreen();
-			}
+			showScreen();
 
                 } else if (oper.equals("fg")) {
  		
