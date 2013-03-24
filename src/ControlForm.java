@@ -512,17 +512,22 @@ public class ControlForm extends CanvasConsumer {
                 }
         }
 	
-	public void handleIfNeeded(String name, int size, Image icon) {
+	public void handleIfNeeded(String name, int size, Image img) {
 	
-		for (int i=0;i<NUM_ICONS;i++) {
-			if (icons[i] == null && 
-			    iconNames[i].equals(name) && 
-			    icSize == size) {
-			        //controller.showAlert("ControlForm.handleIfNeeded "+name);
-				icons[i] = icon; 
-				controller.showScr(Controller.CONTROL_FORM); 	// repaint 
-	    		}
-	 	}   
+		if (size > 0) {
+			for (int i=0;i<NUM_ICONS;i++) {
+				if (icons[i] == null && 
+			    	iconNames[i].equals(name) && 
+			    	icSize == size) {
+			        	//controller.showAlert("ControlForm.handleIfNeeded "+name);
+					icons[i] = img; 
+					controller.showScr(Controller.CONTROL_FORM); 	// repaint 
+	    			}
+	 		}  
+		} else {		// cover
+			cover = img;
+			controller.showScr(Controller.CONTROL_FORM); 	// repaint 
+		}
 	}
                 
 	public void redrawIcons() {

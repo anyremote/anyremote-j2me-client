@@ -60,6 +60,10 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
         Vector		iconCache;
         Vector		iconNameCache;
         Vector		iconRequested;
+
+        Vector		coverCache;
+        Vector		coverNameCache;
+        Vector		coverRequested;
 	
         ControlForm 	cf;
         FileManager 	fm;
@@ -110,11 +114,15 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
                 
        		controller = ctl;
                 
-                iconCache       = new Vector();
-                iconNameCache   = new Vector();
-		iconRequested   = new Vector();
+                iconCache        = new Vector();
+                iconNameCache    = new Vector();
+		iconRequested    = new Vector();
 		
-		popupText       = new StringBuffer(16);  // enough for "Please wait !" :-)
+                coverCache       = new Vector();
+                coverNameCache   = new Vector();
+		coverRequested   = new Vector();
+
+		popupText        = new StringBuffer(16);  // enough for "Please wait !" :-)
 		
 		Image defaultIm = loadImage("file",16); // add default ocon
                 iconNameCache.addElement("file16");
@@ -191,12 +199,15 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
         	iconCache.addElement(im); 
 	}
 	
+	public void addToCoverCache(String name, Image im) {
+        	coverNameCache.addElement(name);
+        	coverCache.addElement(im); 
+	}
+	
 	public Image loadCachedImage(String name, int size, boolean useDefault) {
         	//System.out.println("loadCachedImage " + name + " cache size="+iconNameCache.size());
-        	//controller.showAlert("loadCachedImage " + name + " cache size="+iconNameCache.size());
-        	int sz = iconNameCache.size();
                 
-                String name_sz = name + String.valueOf(size);
+		String name_sz = name + String.valueOf(size);
  
  		int found = iconNameCache.indexOf(name_sz);
         	
@@ -215,20 +226,50 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
         	//controller.showAlert("loadCachedImage " + name + (im == null ? " NULL":" OK") +" cache size="+iconNameCache.size());
 		return (im == null && useDefault ? (Image) iconCache.elementAt(0) : im);
         }
+	
+	public Image loadCachedCover(String name) {
+        	
+ 		int found = coverNameCache.indexOf(name);
+        	
+		Image im = null;
+                if (found >= 0) {
+			im = (Image) coverCache.elementAt(found);
+                } else {
+	               	im = loadImage(name,0);
+ 			
+			synchronized (iconCacheMutex) {
+                         	if (im != null) {
+					addToCoverCache(name, im); 
+                		}
+			}
+                }
+		return im;
+        }
 
 	public Image loadImage(String name, int size) {
         	//System.out.println("loadImage "+name+" "+size);
 	
+		String file = "/" + (size > 0 ? String.valueOf(size) : "covers") + "/" + name+".png";
+	
 		try {
-			return Image.createImage("/" + String.valueOf(size) + "/" + name+".png");
+			return Image.createImage(file);
 		} catch (IOException e) {
-                        Image ri = controller.rmsHandle(false,null,size,size,name);	// try to search in RMS
+
+                        Image ri = controller.rmsHandle(false,null,size,size,name,(size > 0));	// try to search in RMS
 			
-			String name_sz = name + String.valueOf(size);
-			
-			if (ri == null && (!iconRequested.contains(name_sz))) {	// need to send request for upload
-				controller.protocol.queueCommand("_GET_ICON_(" + String.valueOf(size) + ","+name+")");
-				iconRequested.addElement(name_sz);
+			if (ri == null) {
+				if (size > 0){
+				        String name_sz = name + String.valueOf(size);
+			        	if (!iconRequested.contains(name_sz)) {	// need to send request for upload
+						controller.protocol.queueCommand("_GET_ICON_(" + String.valueOf(size) + ","+name+")");
+						iconRequested.addElement(name_sz);
+					}
+				} else {
+			        	if (!coverRequested.contains(name)) {	// need to send request for upload
+						controller.protocol.queueCommand("_GET_COVER_(,"+name+")");
+						coverRequested.addElement(name);
+					}
+				}
 			}
 			return ri;
 		}

@@ -62,7 +62,7 @@ public class ARProtocol {
 	
 	static final int CMD_GETSCRSIZE = 51;
 	static final int CMD_GETPLTF    = 52;
-	static final int CMD_GETICON    = 53;
+	static final int CMD_GETIMG     = 53;
 	static final int CMD_GETCVRSIZE = 54;
 	static final int CMD_GETVER     = 55;
 	static final int CMD_GETCURSOR  = 56;
@@ -230,7 +230,7 @@ public class ARProtocol {
 		} else if (header.equals("Get(model")) {
 			return CMD_GETPLTF;
 		} else if (header.equals("Get(is_exists")) {
-			return CMD_GETICON;
+			return CMD_GETIMG;
 		} else if (header.equals("Get(cover_size")) {
 			return CMD_GETCVRSIZE;
 		} else if (header.equals("Get(version")) {
@@ -947,7 +947,13 @@ public class ARProtocol {
                  		queueCommand("Model(,"+System.getProperty("microedition.platform")+")");
 				break;
 
-			case CMD_GETICON:
+			case CMD_GETIMG:
+				
+				String item1 = (String) cmdTokens.elementAt(1);
+			        if (item1.equals("icon") || item1.equals("cover")) {
+				
+				}
+			
 				boolean isExists = controller.rmsSearch((String) cmdTokens.elementAt(1), (String) cmdTokens.elementAt(2));
 				String resp = (String) cmdTokens.elementAt(1)+","+(String) cmdTokens.elementAt(2)+")";
 				if (isExists) {

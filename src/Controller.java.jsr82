@@ -970,30 +970,39 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
         // RMS stuff
         //
        
-        public void rmsClean() {
+        public void rmsClean(boolean icons, boolean covers) {
                 //System.out.println("rmsClean");
 
-		try {
-	        	RecordStore.deleteRecordStore("icons16");
-	        } catch (Exception e) { }
-		try {
-	        	RecordStore.deleteRecordStore("icons32");
-	        } catch (Exception e) { }
-		try {
-	        	RecordStore.deleteRecordStore("icons48");
-	        } catch (Exception e) { }
-		try {
-	        	RecordStore.deleteRecordStore("icons64");
-	        } catch (Exception e) { }
-		try {
-	        	RecordStore.deleteRecordStore("icons128");
-	        } catch (Exception e) { }
+		if (icons) {
+			 try {
+	        		 RecordStore.deleteRecordStore("icons16");
+	        	 } catch (Exception e) { }
+			 try {
+	        		 RecordStore.deleteRecordStore("icons32");
+	        	 } catch (Exception e) { }
+			 try {
+	        		 RecordStore.deleteRecordStore("icons48");
+	        	 } catch (Exception e) { }
+			 try {
+	        		 RecordStore.deleteRecordStore("icons64");
+	        	 } catch (Exception e) { }
+			 try {
+	        		 RecordStore.deleteRecordStore("icons128");
+	        	 } catch (Exception e) { }
+		}
+		if (covers) {
+			 try {
+	        		 RecordStore.deleteRecordStore("covers");
+	        	 } catch (Exception e) { }
+		}
 	}
         
 	public boolean rmsSearch(String size, String name) {
 		RecordStore rStore = null;
+		
+		String tag = (size.length() == 0 ? "icons"+size : "covers");
         	try {
-            		rStore = RecordStore.openRecordStore("icons"+size, true);
+            		rStore = RecordStore.openRecordStore(tag, true);
 			int i = rStore.getNumRecords();
 			
 			byte[] b = null;
@@ -1017,7 +1026,7 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 			}
 	
         	} catch (Exception e) {
-                	//System.out.println("rmsHandle Exception 1");
+                	//System.out.println("rmsSearch Exception 1");
                 	return false;
 		} finally {
 			if (rStore != null) try {
@@ -1027,25 +1036,32 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 		return false;
 	}
 	
-        public Image rmsHandle(boolean save, int[] imgRgbData, int width, int height, String name) {
+        public Image rmsHandle(boolean save, int[] imgRgbData, int width, int height, String name, boolean isIcon) {
         	
                 //System.out.println("rmsHandle save "+save);
                 
                 RecordStore rStore = null;
         	Image       image  = null;
         	try {
-			String ww = "16";
-			if (width == 32)  ww = "32";
-			if (width == 48)  ww = "48";
-			if (width == 64)  ww = "64";
-			if (width == 128) ww = "128";
+			String tag;
 			
-			//System.out.println("rmsHandle store is "+ww);
+			if (isIcon) {
+				String ww = "16";
+				if (width == 32)  ww = "32";
+				if (width == 48)  ww = "48";
+				if (width == 64)  ww = "64";
+				if (width == 128) ww = "128";
 			
-            		rStore = RecordStore.openRecordStore("icons"+ww, true);
+				//System.out.println("rmsHandle store is "+ww);
+				
+				tag = "icons"+ww;
+			} else {
+				tag = "covers";
+			}
+            		rStore = RecordStore.openRecordStore(tag, true);
 			
 			int i = rStore.getNumRecords();
-			//System.out.println("rmsHandle number of records in store "+ww+" = " + i);
+			//System.out.println("rmsHandle number of records in store "+tag+" = " + i);
 
         		if (save) {
             			// Write image data to output stream (in order to get 

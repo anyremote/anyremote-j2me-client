@@ -82,13 +82,14 @@ public class WinManager extends CanvasConsumer {
 			//controller.showAlert("WinManager >"+action+"<");
 			
 			if (action.equals("window") ||
+                            action.equals("cover")  ||
                             action.equals("icon")) {
-                            
+                           
  				//controller.showAlert("got window/icon");
-                            	boolean isIcon = false;
+                            	boolean justStore = false;
                                 String iName = "";
-                            	if (action.equals("icon")) {
-                                	isIcon = true;
+                            	if (action.equals("icon") || action.equals("cover")) {
+                                	justStore = true;
                                         iName = controller.protocol.getWord(true);
                                 }
                                  
@@ -99,26 +100,42 @@ public class WinManager extends CanvasConsumer {
                                 dX = (controller.cScreen.CW - imW)/2;
                                 dY = (controller.cScreen.CH - imH)/2;
 
-				if (isIcon) {	// Just store it, not show
-                                	
-                                        if (imW == imH && (imW == 16 || imW == 32 || imW == 48 || imW == 64 || imW == 128)) {
-                                        	
-						String name_sz = iName + String.valueOf(imW);
-						int found = controller.cScreen.iconNameCache.indexOf(name_sz);
+				if (justStore) {	// Just store it, not show
+					if (action.equals("icon")) {
+                                        	if (imW == imH && (imW == 16 || imW == 32 || imW == 48 || imW == 64 || imW == 128)) {
+
+							String name_sz = iName + String.valueOf(imW);
+							int found = controller.cScreen.iconNameCache.indexOf(name_sz);
+							if (found < 0) {
+								controller.cScreen.addToIconCache(name_sz,screen); 
+							}
+
+							// Redraw if this image was queued for upload from ControlForm
+							controller.cScreen.cf.handleIfNeeded(iName,imW,screen);
+
+                                                	int argb[] = new int[imW*imH];
+                                        		screen.getRGB(argb,0,imW,0,0,imW,imH);
+                        				controller.rmsHandle(true,argb,imW,imH,iName,true);
+                                                	argb = null;
+							
+							found = controller.cScreen.iconNameCache.indexOf(name_sz);
+                        			} else {
+                					controller.showAlert("Icon does not fit ("+imW+","+imH+")");
+                                        	}
+					} else { 	// cover
+						int found = controller.cScreen.coverNameCache.indexOf(iName);
 						if (found < 0) {
-							controller.cScreen.addToIconCache(name_sz,screen); 
+							controller.cScreen.addToCoverCache(iName,screen); 
+                                                
+							int argb[] = new int[imW*imH];
+                                        		screen.getRGB(argb,0,imW,0,0,imW,imH);
+                        				controller.rmsHandle(true,argb,imW,imH,iName,false);
+                                                	argb = null;
 						}
 
 						// Redraw if this image was queued for upload from ControlForm
-						controller.cScreen.cf.handleIfNeeded(iName,imW,screen);
-						
-                                                int argb[] = new int[imW*imH];
-                                        	screen.getRGB(argb,0,imW,0,0,imW,imH);
-                        			controller.rmsHandle(true,argb,imW,imH,iName);
-                                                argb = null;
-                        		} else {
-                				controller.showAlert("Icon does not fit ("+imW+","+imH+")");
-                                        }
+						controller.repaintCanvas();
+ 					}
                         		return;
                         	}
 			} else if (action.equals("set_cursor")) {
@@ -149,8 +166,14 @@ public class WinManager extends CanvasConsumer {
 				if (controller.cScreen.scr != CanvasScreen.WMAN_SCREEN) {
 					return;
 				}
-			} else if (action.equals("remove_all")) {
-				controller.rmsClean();
+			} else if (action.equals("remove_all")) {  // deprecatad
+				controller.rmsClean(true,true);
+				return;
+			} else if (action.equals("remove")) {
+			        String what = controller.protocol.getWord(true);
+				boolean i = (what.equals("all") || what.equals("icons"));
+				boolean c = (what.equals("all") || what.equals("covers"));
+				controller.rmsClean(i,c);
 				return;
 			} else if (action.equals("clear_cache")) {
 				controller.cScreen.iconNameCache.removeAllElements();
