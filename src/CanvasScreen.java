@@ -249,30 +249,30 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
 	public Image loadImage(String name, int size) {
         	//System.out.println("loadImage "+name+" "+size);
 	
-		String file = "/" + (size > 0 ? String.valueOf(size) : "covers") + "/" + name+".png";
-	
-		try {
-			return Image.createImage(file);
-		} catch (IOException e) {
-
-                        Image ri = controller.rmsHandle(false,null,size,size,name,(size > 0));	// try to search in RMS
-			
-			if (ri == null) {
-				if (size > 0){
-				        String name_sz = name + String.valueOf(size);
-			        	if (!iconRequested.contains(name_sz)) {	// need to send request for upload
-						controller.protocol.queueCommand("_GET_ICON_(" + String.valueOf(size) + ","+name+")");
-						iconRequested.addElement(name_sz);
-					}
-				} else {
-			        	if (!coverRequested.contains(name)) {	// need to send request for upload
-						controller.protocol.queueCommand("_GET_COVER_(,"+name+")");
-						coverRequested.addElement(name);
-					}
+	        if (size > 0) {  // no covers supplied in *jar
+			try {
+				return Image.createImage("/" + String.valueOf(size) + "/" + name+".png");
+			} catch (IOException e) { 
+			}
+                }
+                        
+		Image ri = controller.rmsHandle(false,null,size,size,name,(size > 0));	// try to search in RMS
+		
+		if (ri == null) {
+			if (size > 0){
+			        String name_sz = name + String.valueOf(size);
+		        	if (!iconRequested.contains(name_sz)) {	// need to send request for upload
+					controller.protocol.queueCommand("_GET_ICON_(" + String.valueOf(size) + ","+name+")");
+					iconRequested.addElement(name_sz);
+				}
+			} else {
+		        	if (!coverRequested.contains(name)) {	// need to send request for upload
+					controller.protocol.queueCommand("_GET_COVER_(,"+name+")");
+					coverRequested.addElement(name);
 				}
 			}
-			return ri;
 		}
+		return ri;
  	}
 
 	public Image loadImageResource(String name, int size) {
