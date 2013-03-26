@@ -1171,18 +1171,18 @@ public class ControlForm extends CanvasConsumer {
                 cover    = null;
                 namedCover = "";
                 
-                Vector data;
+                Vector data = new Vector();
                 useCover = controller.cScreen.receiveCover(data);
                 
                 if (useCover) {
                     String op = (String) data.elementAt(0);
-                    if (op.equals("noname") {
+                    if (op.equals("noname")) {
                        
                        useCover = true;
                        cover    = (Image) data.elementAt(1);
                        namedCover = "";
 
-                    } else if (op.equals("by_name") {
+                    } else if (op.equals("by_name")) {
                        useCover = true;
                        cover    = null;
                        namedCover = (String) data.elementAt(1);

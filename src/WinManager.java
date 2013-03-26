@@ -329,7 +329,7 @@ public class WinManager extends CanvasConsumer {
 
     public void pointerPressed(int x, int y) {
 
-        if (y < dY) }
+        if (y < dY) {
             y = dY;
         } else if (y > (controller.cScreen.CH - dY)) {
             y = controller.cScreen.CH - dY;

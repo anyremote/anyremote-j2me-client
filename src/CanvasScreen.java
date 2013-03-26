@@ -279,59 +279,59 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
      }
 
     public Image loadImageResource(String name, int size) {
-         try {
+        try {
             return Image.createImage("/" + String.valueOf(size) + "/" + name+".png");
         } catch (IOException e) { } 
         
         return null;
     }
     
-	private boolean receiveCover(Vector cmdTokens) {
-		
+    public boolean receiveCover(Vector cmdTokens) {
+        
         try {
-			int sz = dis.readInt();
+            int sz = controller.protocol.iStream.readInt();
 
-			if (sz <= 0) {
-				return false;
-			}
-			if (sz == 1652121454) {  // trick: Set(cover,by_name,<name>)
+            if (sz <= 0) {
+                return false;
+            }
+            if (sz == 1652121454) {  // trick: Set(cover,by_name,<name>)
 
-				String dummy = controller.protocol.getWord(true);
-				cmdTokens.addElement("by_name");
-				String name = getWord(true);
-				cmdTokens.addElement(name);
-				
-				sz = 0;
-			} else if (sz == 1852796513) {  // trick: Set(cover,noname,<image data>)
+                String dummy = controller.protocol.getWord(true);
+                cmdTokens.addElement("by_name");
+                String name = controller.protocol.getWord(true);
+                cmdTokens.addElement(name);
+                
+                sz = 0;
+            } else if (sz == 1852796513) {  // trick: Set(cover,noname,<image data>)
 
-				String dummy = controller.protocol.getWord(true);
-				cmdTokens.addElement("noname");
-				
-				sz = dis.readInt();
-			
-			} else if (sz == 1668048225) {  // trick: Set(cover,clear)
+                String dummy = controller.protocol.getWord(true);
+                cmdTokens.addElement("noname");
+                
+                sz = controller.protocol.iStream.readInt();
+    
+            } else if (sz == 1668048225) {  // trick: Set(cover,clear)
 
-				String dummy = getWord(true);
-				cmdTokens.addElement("clear");
-				
-				sz = 0;
-			} else {  // old syntax: Set(cover,,<image data>)
-				cmdTokens.addElement("noname");
-			}
-			
-			if (sz > 0) {
-			    Image cover = receiveImage(sz);
-			    cmdTokens.addElement(cover);
-			}
-			
-		} catch (Exception e1) {
-			return false;
-		} catch (Error me) {
-			return false;
-		}
-		
-		return true;
-	}
+                String dummy = controller.protocol.getWord(true);
+                cmdTokens.addElement("clear");
+                
+                sz = 0;
+            } else {  // old syntax: Set(cover,,<image data>)
+                cmdTokens.addElement("noname");
+            }
+    
+            if (sz > 0) {
+                Image cover = receiveImage(sz);
+                cmdTokens.addElement(cover);
+            }
+            
+        } catch (Exception e1) {
+            return false;
+        } catch (Error me) {
+            return false;
+        }
+        
+        return true;
+    }
 
     public Image receiveImage() throws IOException {
 
@@ -341,7 +341,7 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
         return receiveImage(sz);
     }
     
-    public Image receiveImage(in sz) throws IOException {
+    public Image receiveImage(int sz) throws IOException {
     
         //System.out.println("receiveImage: image size "+sz);
         //controller.showAlert("receiveImage: image size "+sz);
