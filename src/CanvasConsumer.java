@@ -2,7 +2,7 @@
 // anyRemote java client
 // a bluetooth remote for your PC.
 //
-// Copyright (C) 2006-2012 Mikhail Fedotov <anyremote@mail.ru>
+// Copyright (C) 2006-2013 Mikhail Fedotov <anyremote@mail.ru>
 // 
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ import javax.microedition.lcdui.Displayable;
 
 interface ICanvasConsumer {
 
-        void showScreen();
+    void showScreen();
 	void hideScreen();
 	
 	void keyPressed (int keyCode);
