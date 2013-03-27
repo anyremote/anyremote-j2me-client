@@ -150,31 +150,27 @@ public class ARProtocol {
                     openConnection();
                 }
                 do {
-		    System.out.println("->doNextCommand");
                     doNextCommand();
-		    System.out.println("doNextCommand->receiveReplay");
                     receiveReplay();
-		    System.out.println("receiveReplay->wait");
 
                     synchronized (runSignal) {              // We wants to receive alarms from server!
                          runSignal.wait(SLEEP_TIME); 
                     }
-		    System.out.println("wait->doNextCommand");
                     
                 } while (reconnect == true);
 
             } catch (IOException e) {
-                System.out.println  ("run() IOException");
+                //System.out.println  ("run() IOException");
                 //controller.showAlertAsTitle("run() IOException "+e.getMessage());
                 stopKeepaliveTimer();
                 continue;            
             } catch (InterruptedException e) {
-                System.out.println  ("run() InterruptedException");
+                //System.out.println  ("run() InterruptedException");
                 //controller.showAlertAsTitle("run() InterruptedException");
                 stopKeepaliveTimer();
                 throw new RuntimeException("InterruptedException "+e.getMessage());    
             } catch (Exception e) {
-                System.out.println  ("run() Exception "+e.getClass().getName()+" "+e.getMessage());
+                //System.out.println  ("run() Exception "+e.getClass().getName()+" "+e.getMessage());
                 //controller.showAlertAsTitle("run() Exception "+e.getClass().getName());
             }
             stopKeepaliveTimer();
@@ -306,11 +302,11 @@ public class ARProtocol {
             checkComma = false;
         } else if (curCmdId == CMD_TEXT && 
                    cmdTokens.size() >=2 && 
-               (((String) cmdTokens.elementAt(1)).equals("fg") || ((String) cmdTokens.elementAt(1)).equals("bg"))) {
+                   (((String) cmdTokens.elementAt(1)).equals("fg") || 
+		    ((String) cmdTokens.elementAt(1)).equals("bg"))) {
             checkComma = true;
         }
-        
-        
+	
         String aWord = "";
         
         // thanks to Nokia for bug in read()
@@ -321,105 +317,110 @@ public class ARProtocol {
             //controller.showAlert("AVAILABLE="+btoRead);
             //System.out.println  ("AVAILABLE="+btoRead);
         }
-        
-                while (btoRead > 0 && wasRead < BUFFER_SIZE) {
-            int n = iStream.read(bArray,wasRead,1);
-                        if (n>0) {
-                            wasRead += n;
-                                btoRead -= n;
+        //System.out.println  ("getWord() to read "+btoRead);
+        while (btoRead > 0 && wasRead < BUFFER_SIZE) {
+	
+	    //System.out.println  ("getWord() WHILE");
+            
+	    int n = iStream.read(bArray,wasRead,1);
+	    
+	    //System.out.println  ("getWord() WAS READ "+n);
+            if (n>0) {
+                wasRead += n;
+                btoRead -= n;
                 // can crash if encoding is wrong
-                                //String s = new String(bArray,wasRead-1,1);
-                                //System.out.println  ("getWord() WAS READ " + s + " " +wasRead + " " +btoRead);
+                //String s = new String(bArray,wasRead-1,1);
+                //System.out.println("getWord() WAS READ " + " " +wasRead + " " +btoRead);
                 //controller.showAlert("getWord() WAS READ "+s+" " +wasRead + " " +btoRead);
-                        }
+            }
 
             // read short command fully ot long command partially
             try {
                 if (checkComma && bArray[wasRead-1] == ',') {
                     comma  = true;
                 } 
-                                if (bArray[wasRead-1] == ')') {
+                if (bArray[wasRead-1] == ')') {
                     cBrace  = true;
                     semicol = false;
                 } else if (bArray[wasRead-1] == ';' && cBrace == true) {
-                                     semicol = true;
+                    semicol = true;
                 } else {
-                                    cBrace  = false;
-                                }
-                       } catch (Exception e) { // ignore it
+                    cBrace  = false;
+                }
+            } catch (Exception e) { // ignore it
                 //System.out.println  ("Exception at getWord() " + e.getClass().getName() + e.getMessage());
-                        controller.showAlert("Exception at getWord() " + e.getClass().getName() + e.getMessage());
+                //controller.showAlert("Exception at getWord() " + e.getClass().getName() + e.getMessage());
             }
         
             if (comma) {
-                            //System.out.println  ("getWord() COMMA");
+                //System.out.println  ("getWord() COMMA");
                 aWord = bytes2String(wasRead-1);
                 readingEndsAt = ENDS_AT_COMMA;
-                                wasRead = 0;
+                wasRead = 0;
 
                 return aWord.trim();
             }
         
             if (cBrace && semicol) {
-                            //System.out.println  ("getWord() );");
+                //System.out.println  ("getWord() );");
                 if (doNotSkip) {
                     aWord = bytes2String(wasRead-2);
                 }
                 readingEndsAt = ENDS_AT_CEND;
-                                wasRead = 0;
+                wasRead = 0;
             
                 return aWord.trim();
             }
                 
             if (wasRead == BUFFER_SIZE) {
-                            //System.out.println  ("getWord() BUFFER_SIZE");
-                            readingEndsAt = ENDS_AT_NOMORE;
+                //System.out.println  ("getWord() BUFFER_SIZE");
+                readingEndsAt = ENDS_AT_NOMORE;
+                
+                int i = wasRead-1;    // Search a space backward
                          
-                            int i = wasRead-1;    // Search a space backward
-                         
-                               while (i>=0) { 
-                                if (bArray[i] == ' ') {
-                                        break;
-                                    }
-                                    i--;
-                        }
+                while (i>=0) { 
+                    if (bArray[i] == ' ') {
+                        break;
+                    }
+                    i--;
+               }
                         
-                            if (i>0) {
-                                    i++;
+               if (i>0) {
+                    i++;
                     if (i > wasRead-1) {
                         i = wasRead-1;
                     }
-                                aWord = bytes2String(i);
-                                
-                        wasRead -= i;
-                        try {
-                            int k = 0;
-                            while (k<wasRead) {
-                                bArray[k] = bArray[k+i];
-                                    k++;
-                            }
-                        } catch (Exception e) {
-                            //System.out.println  ("Exception at shift " + e.getClass().getName() + e.getMessage());
-                        //controller.showAlert("Exception at shift " + e.getClass().getName() + e.getMessage());
+                    aWord = bytes2String(i);
+                    	    
+                    wasRead -= i;
+                    try {
+                        int k = 0;
+                        while (k<wasRead) {
+                            bArray[k] = bArray[k+i];
+                            k++;
                         }
-                                
-                                    return aWord;    // no trim !!!
-                            } else {    // last chance - convert all buffer
-                                    aWord = bytes2String(BUFFER_SIZE);
-                                    wasRead = 0;
-                                    return aWord;
-                            }
+                    } catch (Exception e) {
+                        //System.out.println  ("Exception at shift " + e.getClass().getName() + e.getMessage());
+                        //controller.showAlert("Exception at shift " + e.getClass().getName() + e.getMessage());
                     }
+                                
+                    return aWord;    // no trim !!!
+                } else {    // last chance - convert all buffer
+                    aWord = bytes2String(BUFFER_SIZE);
+                    wasRead = 0;
+                    return aWord;
+                }
+            }
         }
         
         readingEndsAt = ENDS_AT_NOMORE;
         if (doNotSkip) {
-                    if (streamedCmd(curCmdId)) {
+            if (streamedCmd(curCmdId)) {
                 aWord = bytes2String(wasRead);
                 wasRead = 0;
                 return aWord.trim();
-                    }
-                } else {
+            }
+        } else {
             wasRead = 0;
         }
 
@@ -427,33 +428,34 @@ public class ARProtocol {
     }
     
     private void receiveReplay() throws Exception {
-        System.out.println  ("receiveReplay() => "+ curCmdId+" "+readStage);
+        //System.out.println  ("receiveReplay() => "+ curCmdId+" "+readStage);
         
         while (true) {
             if (charMode) {
-            
+                //System.out.println  ("receiveReplay before getWord() ");
+		
                 String aWord = getWord(true); // a part of input stream separated by "," ");"
 
                 //if (aWord.length() > 0) {
                 //    controller.showAlert("getWord() " + aWord);
-                    System.out.println  ("receiveReplay->getWord() " + aWord);
+                //    System.out.println  ("receiveReplay->getWord() " + aWord);
                 //}
                                         
                 if (aWord.length() == 0 && readingEndsAt == ENDS_AT_NOMORE) {    
                     // this could happens if command was not readed fully
-                    System.out.println  ("receiveReplay(): getWord() => NO DATA");
+                    //System.out.println  ("receiveReplay(): getWord() => NO DATA");
                     //controller.showAlert("getWord() => NO DATA");
                     return;
                 }                                
 
                 if (readStage == READ_NO) {    // got header
 
-                    System.out.println  ("got header" + aWord);
+                    //System.out.println  ("got header " + aWord);
                     //controller.showAlert("got header " + aWord);
                     
                     if (cmdTokens.size() > 0) {
-                    	//controller.showAlert("Header in incorrect order " + aWord);
-                    	cmdTokens.removeAllElements();
+                        //controller.showAlert("Header in incorrect order " + aWord);
+                        cmdTokens.removeAllElements();
                     }
                                         
                     charMode = true;
@@ -473,7 +475,7 @@ public class ARProtocol {
                     readStage = READ_CMDID;
                     
                     if (id == CMD_IMAGE || id == CMD_COVER) {
-                        System.out.println  ("GOT BINARY DATA");
+                        //System.out.println  ("GOT BINARY DATA");
                         charMode = false;
                         //btoRead  = 0; // in binary mode we will read full image
                     }
@@ -482,13 +484,13 @@ public class ARProtocol {
                     cmdTokens.addElement(new Integer(id));
                     
                 } else {
-                    System.out.println  ("got the rest/next part");
+                    //System.out.println  ("got the rest/next part");
                     cmdTokens.addElement(aWord);
                 }
         
                 if (readingEndsAt == ENDS_AT_CEND) {        // command was read fully
                                     
-                    System.out.println  ("FULL read");
+                    //System.out.println  ("FULL read");
                     int stage  = (readStage == READ_PART ? CanvasConsumer.LAST : CanvasConsumer.FULL);
                     
                     execCommand(cmdTokens,curCmdId,stage);
@@ -498,7 +500,7 @@ public class ARProtocol {
                     
                 } else if (readingEndsAt == ENDS_AT_NOMORE  ) {    // command was read partially
                 
-                   System.out.println  ("PARTIAL read");
+                   //System.out.println  ("PARTIAL read");
                    if (streamedCmd(curCmdId)) {
  
                         int stage  = (readStage == READ_CMDID ? CanvasConsumer.FIRST : CanvasConsumer.INTERMED);
@@ -514,24 +516,25 @@ public class ARProtocol {
                 if (readStage == READ_NO) {    
                     // got header, this means we did not reset charMode flag, this is error
                     //controller.showAlert("Got header in binary mode ?");
-                    System.out.println  ("Got header in binary mode ?");
+                    //System.out.println  ("Got header in binary mode ?");
                     
                     charMode = true;
-                    continue;
+		    btoRead   = 0;
+                    //continue;
                     
                 } else if (readStage == READ_CMDID){
                     
-                    System.out.println  ("HANDLE binary command");
+                    //System.out.println  ("HANDLE binary command");
                     execCommand(cmdTokens,curCmdId,CanvasConsumer.FIRST);
                     
-                    System.out.println  ("End of binary mode");
+                    //System.out.println  ("End of binary mode");
                     
-                    // all were done inside binary handler	  
-                   charMode = true;
+                    // all were done inside binary handler      
+                   charMode  = true;
                    readStage = READ_NO;
                    curCmdId  = CMD_NO;
+		   btoRead   = 0;
                    //continue;
-                               
                 }
             }
         }
@@ -629,15 +632,16 @@ public class ARProtocol {
                     bts = cmd.getBytes();
                 }
                 
-		System.out.println("Send Command "+cmd);
+                //System.out.println("Send Command "+cmd);
 
                 oStream.write(bts, 0, bts.length);
                 oStream.writeChar(';');
                 oStream.writeChar('\r');
-		    
+            
                 if (flushErrors == 0 || (! controller.motoFixMenu)) {
                     try {    // Motorola KRZR K1 always throws this exception; and call to flush() takes a lo-o-ot of time 
                         oStream.flush();
+			//System.out.println("Send Command flushed");
                     } catch (IOException e) { 
                         flushErrors++;    
                         controller.showAlert("oStream.flush: "+e.getMessage()+"->"+e.getClass().getName());
@@ -646,13 +650,13 @@ public class ARProtocol {
                 bts = null;
 
             } catch (IOException e) {
-	        System.out.println("doNextCommand() IOException "+e.getClass().getName());
+                System.out.println("doNextCommand() IOException "+e.getClass().getName());
                 //controller.showAlert("doNextCommand() IOException");
                 //controller.showAlertAsTitle("DNC IOEx "+e.getMessage()+"->"+e.getClass().getName());
                 
                 throw new IOException("Exception on send 1: "+e.getMessage());
             } catch (Exception e) {
-	        System.out.println("doNextCommand() Exception "+e.getClass().getName());
+                System.out.println("doNextCommand() Exception "+e.getClass().getName());
                 //controller.showAlert("doNextCommand() Exception "+e.getClass().getName());
                 //controller.showAlertAsTitle("DNC Ex "+e.getClass().getName());
                 //throw new IOException("Exception on send 2: "+e.getMessage());
@@ -687,7 +691,7 @@ public class ARProtocol {
     }
 
     public void queueCommand(int keycode, boolean pressed) {
-        System.out.println("queueCommand ("+keycode +" " + pressed + ") joystick="+ Canvas.FIRE+" "+Canvas.DOWN+" "+Canvas.UP+" "+Canvas.LEFT+" "+Canvas.RIGHT);
+        //System.out.println("queueCommand ("+keycode +" " + pressed + ") joystick="+ Canvas.FIRE+" "+Canvas.DOWN+" "+Canvas.UP+" "+Canvas.LEFT+" "+Canvas.RIGHT);
         //controller.showAlert("queueCommand "+keycode+" p/r="+pressed);
         
         String key = String.valueOf(keycode);
@@ -730,7 +734,7 @@ public class ARProtocol {
     }
 
     public void queueCommand(String message) {
-         System.out.println("queueCommand " + message);
+         //System.out.println("queueCommand " + message);
          appendCommand("Msg:" + message);
     }
 
@@ -775,7 +779,7 @@ public class ARProtocol {
             return;
         }
         
-        System.out.println  ("execCommand " + id + " " + stage);
+        //System.out.println  ("execCommand " + id + " " + stage);
         //controller.showAlert("execCommand " + id + " " + stage);
 
         switch (id) {
@@ -902,7 +906,7 @@ public class ARProtocol {
                 break;
 
             case CMD_GETICSIZE:
-                         queueCommand("IconSize("+controller.cScreen.cf.icSize+",)");
+                queueCommand("IconSize("+controller.cScreen.cf.icSize+",)");
                 break;
                 
             case CMD_GETICPAD:
@@ -961,32 +965,32 @@ public class ARProtocol {
         	String name = "";
 
         	if (item1.equals("icon")) {              // Get(is_exists,icon,size,name)
-        	    size = (String) cmdTokens.elementAt(2);
-        	    name = (String) cmdTokens.elementAt(3);
+                    size = (String) cmdTokens.elementAt(2);
+                    name = (String) cmdTokens.elementAt(3);
         	} else if (item1.equals("cover")) {        // Get(is_exists,cover,name)
-        	    name = (String) cmdTokens.elementAt(2);
+                    name = (String) cmdTokens.elementAt(2);
         	} else {                      // old syntax Get(is_exists,size,name)
-        	    size = item1;
-        	    name = (String) cmdTokens.elementAt(1);
+                    size = item1;
+                    name = (String) cmdTokens.elementAt(1);
         	}
 
         	boolean isExists = controller.rmsSearch(size, name);
-        	System.out.println  ("IS EXISTS(): "+name+" >"+size+"< "+isExists);
+        	//System.out.println  ("IS EXISTS(): "+name+" >"+size+"< "+isExists);
 
         	String resp;
         	if (size.length() == 0) {
-        	    if (isExists) {
+                    if (isExists) {
                 	resp = "CoverExists(,"+name+")";
-        	    } else {
+                    } else {
                 	resp = "CoverNotExists(,"+name+")";
-        	    }
+                    }
         	} else {
-        	    resp = size+","+name+")";
-        	    if (isExists) {
+                    resp = size+","+name+")";
+                    if (isExists) {
                 	resp = "IconExists("+resp;
-        	    } else {
+                    } else {
                 	resp = "IconNotExists("+resp;
-        	    }
+                    }
         	}
                 queueCommand(resp);
                 break;
@@ -995,7 +999,7 @@ public class ARProtocol {
                 //System.out.println  ("execCommand(): Command or handler unknown");
                 //controller.showAlert("execCommand(): Command or handler unknown");
         }
-        System.out.println  ("Clean up tokens");
+        //System.out.println  ("Clean up tokens");
         cmdTokens.removeAllElements();
     }
     
