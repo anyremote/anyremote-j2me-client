@@ -252,6 +252,10 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
     public Image loadImage(String name, int size) {
         //System.out.println("loadImage "+name+" "+size);
     
+        if (name.equals("none")) {
+	    return null;
+	}
+	
         if (size > 0) {  // no covers supplied in *jar
             try {
                 return Image.createImage("/" + String.valueOf(size) + "/" + name+".png");
@@ -294,8 +298,10 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
             if (sz <= 0) {
                 return false;
             }
+	    System.out.println("receiveCover: image size "+sz);
+	    
             if (sz == 1652121454) {  // trick: Set(cover,by_name,<name>)
-
+                System.out.println("receiveCover: by_name");
                 String dummy = controller.protocol.getWord(true);
                 cmdTokens.addElement("by_name");
                 String name = controller.protocol.getWord(true);
@@ -303,19 +309,19 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
                 
                 sz = 0;
             } else if (sz == 1852796513) {  // trick: Set(cover,noname,<image data>)
-
+                System.out.println("receiveCover: noname");
                 String dummy = controller.protocol.getWord(true);
                 cmdTokens.addElement("noname");
                 
                 sz = controller.protocol.iStream.readInt();
     
             } else if (sz == 1668048225) {  // trick: Set(cover,clear)
-
+                System.out.println("receiveCover: clear");
                 String dummy = controller.protocol.getWord(true);
                 cmdTokens.addElement("clear");
                 
                 sz = 0;
-            } else {  // old syntax: Set(cover,,<image data>)
+            } else {  // old syntax: Set(cover,<image data>)
                 cmdTokens.addElement("noname");
             }
     
@@ -343,7 +349,7 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
     
     public Image receiveImage(int sz) throws IOException {
     
-        //System.out.println("receiveImage: image size "+sz);
+        System.out.println("receiveImage: image size "+sz);
         //controller.showAlert("receiveImage: image size "+sz);
         controller.protocol.doNextCommand();
     

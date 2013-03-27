@@ -504,12 +504,17 @@ public class ControlForm extends CanvasConsumer {
                 if (i>=0||i<NUM_ICONS) {
                     icons[i]     = controller.cScreen.loadCachedImage((String) data.elementAt(idx+1),icSize,false);
                     iconNames[i] = (String) data.elementAt(idx+1);
+		    //System.out.println("setIconLayout "+i+" "+iconNames[i]);
                 }  
             } catch (Exception e) { 
                 //System.out.println("exception"+e.getMessage());
             }
         }
-
+        
+	if (skin==SK_7X1) {
+	    setIconXY();
+	}
+	
         if (needRepaint) {
             controller.showScr(Controller.CONTROL_FORM);
         }
@@ -565,7 +570,7 @@ public class ControlForm extends CanvasConsumer {
     }
     
     public void drawScreen() {
-        //System.out.println("ControlForm.drawScreen");
+        System.out.println("ControlForm.drawScreen");
         //controller.showAlert("ControlForm.drawScreen");
         
         setPositions(); // Recalculate positions
@@ -598,7 +603,7 @@ public class ControlForm extends CanvasConsumer {
                     int cv = getCoverSize();
                     if (cv > 0) {
                     
-                        Image im = cover != null ? cover : controller.cScreen.loadCachedCover(namedCover);
+                        Image im = (cover != null ? cover : controller.cScreen.loadCachedCover(namedCover));
                         if (im != null) {
                         
                             int ci = im.getHeight();
@@ -622,6 +627,7 @@ public class ControlForm extends CanvasConsumer {
                                 
                 controller.cScreen.gr.setColor(fg);
                 controller.cScreen.gr.drawString(statusItem, controller.cScreen.CW>>1, getStatusY(), Graphics.TOP|Graphics.HCENTER);
+		System.out.println("ControlForm.drawScreen() "+statusItem+" "+getStatusY());
                                 
                 if (useTicker) {
                     // will run ticker if string is long enough
@@ -629,7 +635,7 @@ public class ControlForm extends CanvasConsumer {
                                         
                     if (nInfoItems > 0) {
                         int tickerY = startTitleY;
-                        if (useCover && cover != null) {
+                        if (useCover && (cover != null || namedCover.length() > 0)) {
                             tickerY = yCorner - fh_and_half;
                         
                             if (useVolume) {
@@ -672,8 +678,9 @@ public class ControlForm extends CanvasConsumer {
                         
         } catch (Exception e) {
             //controller.showAlert("Exception in ControlForm.drawScreen() "+e.getClass().getName()+" "+e.getMessage());
-            //System.out.println("Exception in ControlForm.drawScreen() "+e.getClass().getName()+" "+e.getMessage());
+            System.out.println("Exception in ControlForm.drawScreen() "+e.getClass().getName()+" "+e.getMessage());
         }
+	System.out.println("ControlForm.drawScreen() DONE");
     }
 
     public void drawCursor(int x, int y) {
@@ -877,7 +884,7 @@ public class ControlForm extends CanvasConsumer {
     }
         
     public void keyPressed(int keyCode) {
-        //System.out.println("ControlForm.keyPressed "+keyCode);
+        System.out.println("ControlForm.keyPressed "+keyCode);
         //controller.showAlertAsTitle("keyPressed " + keyCode);
         //controller.showAlert("keyPressed " + keyCode);
         if (useKeypad) {
@@ -912,7 +919,7 @@ public class ControlForm extends CanvasConsumer {
     }
     
     public void keyReleased(int keyCode) {
-        //System.out.println("ControlForm.keyReleased" + keyCode);
+        System.out.println("ControlForm.keyReleased" + keyCode);
         //controller.showAlert("keyReleased " + keyCode);
 
         clearPressed();
@@ -1047,10 +1054,12 @@ public class ControlForm extends CanvasConsumer {
                 iconMax = NUM_ICONS_7X1;
         }
         for (;iconMax>=0; iconMax--) {
+	    //System.out.println("ControlForm.setLastIcon "+iconMax+" "+iconNames[iconMax-1]);
             if (!iconNames[iconMax-1].equals("none")) {
                 break;
             }
         }
+	//System.out.println("ControlForm.setLastIcon "+iconMax);
         return iconMax;
     }
         
@@ -1127,6 +1136,7 @@ public class ControlForm extends CanvasConsumer {
               case SK_7X1:
                 xCorner = 0;
                 yCorner = H - iSize - 2;
+		//System.out.println("ControlForm.setPositions "+yCorner+" "+H);
                          
                 if (useTicker) {
                     startTitleY = (H>>1) + (FH>>2) - icSize + (yShift>>1) - (yShift2>>1);
@@ -1151,6 +1161,7 @@ public class ControlForm extends CanvasConsumer {
         } catch (Exception e) {
             //controller.showAlert("Exception in setPositions() "+e.getMessage());
         }
+	//System.out.println("ControlForm.setPositions "+yCaption);
     }
     
     public void fullscreenBkgr() {
@@ -1158,7 +1169,7 @@ public class ControlForm extends CanvasConsumer {
     }
     
     public void setData(Vector dataIn, int stage) {
-       //System.out.println("ControlForm.setData "+stage);
+       System.out.println("ControlForm.setData "+stage);
        //controller.showAlert("ControlForm.setData");
         
         if (stage == CanvasConsumer.FULL) {
@@ -1214,7 +1225,7 @@ public class ControlForm extends CanvasConsumer {
             if (useVolume) {
                 yBottom -= 8;
             }
-             int sz = yBottom - yTop;
+            int sz = yBottom - yTop;
             return controller.cScreen.CW > sz ? sz : controller.cScreen.CW;
         }
         return -1;

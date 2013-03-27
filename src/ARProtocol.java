@@ -36,23 +36,23 @@ public class ARProtocol {
     static final int SLEEP_TIME  = 100;    // 1/10 of second
     static final int BUFFER_SIZE = 512;    
 
-    static final int CMD_NO           = 0;    // commmands
+    static final int CMD_NO         = 0;    // commmands
     static final int CMD_BG         = 1;
     static final int CMD_CAPTION    = 2;
     static final int CMD_EFIELD     = 3;
     static final int CMD_FG         = 4;
-    static final int CMD_FMAN         = 5;
-    static final int CMD_FONT         = 6;
+    static final int CMD_FMAN       = 5;
+    static final int CMD_FONT       = 6;
     static final int CMD_FSCREEN    = 7;
-    static final int CMD_ICONLIST     = 8;
+    static final int CMD_ICONLIST   = 8;
     static final int CMD_ICONS      = 9;
-    static final int CMD_LIST         = 10;
-    static final int CMD_MENU         = 11;
+    static final int CMD_LIST       = 10;
+    static final int CMD_MENU       = 11;
     static final int CMD_PARAM      = 12;
     static final int CMD_REPAINT    = 13;
     static final int CMD_LAYOUT     = 14;
     static final int CMD_STATUS     = 15;
-    static final int CMD_TEXT         = 16;
+    static final int CMD_TEXT       = 16;
     static final int CMD_TITLE      = 17;
     static final int CMD_IMAGE      = 18;
     static final int CMD_VIBRATE    = 19;
@@ -72,19 +72,19 @@ public class ARProtocol {
     static final int CMD_GETICPAD   = 60;
     
     static final int CMD_CLOSECONN  = 101;
-    //static final int CMD_EXIT       = 102;
+    //static final int CMD_EXIT     = 102;
 
     //static final int ENDS_AT_UKNWN  = 0;    // reading of a word was finished at: ");" "," " " or all was read
     static final int ENDS_AT_CEND   = 1;    
-    //static final int ENDS_AT_BEND   = 2;    
+    //static final int ENDS_AT_BEND = 2;    
     static final int ENDS_AT_COMMA  = 3;    
     //static final int ENDS_AT_SPACE  = 4;    
     static final int ENDS_AT_NOMORE = 5;    
 
-    static final int READ_NO      = 0;
-    static final int READ_CMDID      = 1;
-    //static final int READ_SCMDID      = 2;
-    static final int READ_PART      = 3;
+    static final int READ_NO       = 0;
+    static final int READ_CMDID    = 1;
+    //static final int READ_SCMDID = 2;
+    static final int READ_PART     = 3;
     
     boolean     charMode;
     boolean     useUtf8;
@@ -150,28 +150,32 @@ public class ARProtocol {
                     openConnection();
                 }
                 do {
-                                    doNextCommand();
-                                        receiveReplay();
+		    System.out.println("->doNextCommand");
+                    doNextCommand();
+		    System.out.println("doNextCommand->receiveReplay");
+                    receiveReplay();
+		    System.out.println("receiveReplay->wait");
 
                     synchronized (runSignal) {              // We wants to receive alarms from server!
                          runSignal.wait(SLEEP_TIME); 
                     }
+		    System.out.println("wait->doNextCommand");
                     
                 } while (reconnect == true);
 
             } catch (IOException e) {
-                //System.out.println  ("run() IOException");
-                    //controller.showAlertAsTitle("run() IOException "+e.getMessage());
+                System.out.println  ("run() IOException");
+                //controller.showAlertAsTitle("run() IOException "+e.getMessage());
                 stopKeepaliveTimer();
                 continue;            
             } catch (InterruptedException e) {
-                //System.out.println  ("run() InterruptedException");
-                    //controller.showAlertAsTitle("run() InterruptedException");
+                System.out.println  ("run() InterruptedException");
+                //controller.showAlertAsTitle("run() InterruptedException");
                 stopKeepaliveTimer();
                 throw new RuntimeException("InterruptedException "+e.getMessage());    
             } catch (Exception e) {
-                //System.out.println  ("run() Exception "+e.getClass().getName()+" "+e.getMessage());
-                    //controller.showAlertAsTitle("run() Exception "+e.getClass().getName());
+                System.out.println  ("run() Exception "+e.getClass().getName()+" "+e.getMessage());
+                //controller.showAlertAsTitle("run() Exception "+e.getClass().getName());
             }
             stopKeepaliveTimer();
             closeConnection();
@@ -419,11 +423,11 @@ public class ARProtocol {
             wasRead = 0;
         }
 
-                return "";
+        return "";
     }
     
     private void receiveReplay() throws Exception {
-        //System.out.println  ("receiveReplay() => "+ curCmdId+" "+readStage);
+        System.out.println  ("receiveReplay() => "+ curCmdId+" "+readStage);
         
         while (true) {
             if (charMode) {
@@ -432,44 +436,44 @@ public class ARProtocol {
 
                 //if (aWord.length() > 0) {
                 //    controller.showAlert("getWord() " + aWord);
-                //    System.out.println  ("receiveReplay->getWord() " + aWord);
-                  //}
+                    System.out.println  ("receiveReplay->getWord() " + aWord);
+                //}
                                         
-                                if (aWord.length() == 0 && readingEndsAt == ENDS_AT_NOMORE) {    
+                if (aWord.length() == 0 && readingEndsAt == ENDS_AT_NOMORE) {    
                     // this could happens if command was not readed fully
-                    //System.out.println  ("getWord() => NO DATA");
+                    System.out.println  ("receiveReplay(): getWord() => NO DATA");
                     //controller.showAlert("getWord() => NO DATA");
-                                    return;
-                                }                                
+                    return;
+                }                                
 
                 if (readStage == READ_NO) {    // got header
 
-                    //System.out.println  ("got header");
-                                        //controller.showAlert("got header " + aWord);
+                    System.out.println  ("got header" + aWord);
+                    //controller.showAlert("got header " + aWord);
                     
-                                        if (cmdTokens.size() > 0) {
-                                            //controller.showAlert("Header in incorrect order " + aWord);
-                                            cmdTokens.removeAllElements();
-                                        }
+                    if (cmdTokens.size() > 0) {
+                    	//controller.showAlert("Header in incorrect order " + aWord);
+                    	cmdTokens.removeAllElements();
+                    }
                                         
                     charMode = true;
                     int id = cmdId(aWord);
                     
                     if (id == CMD_NO) {
-                                //controller.showAlert("Incorrect command " + aWord);
+                        //controller.showAlert("Incorrect command " + aWord);
                         //System.out.println  ("Incorrect command " + aWord);
                                                 
-                         getWord(false);    // skip until  ");" or until end of available bytes
-                                                
-                                                readStage = READ_NO;
-                                                curCmdId  = CMD_NO;
-                                                continue;
+                        getWord(false);    // skip until  ");" or until end of available bytes
+                         
+                        readStage = READ_NO;
+                        curCmdId  = CMD_NO;
+                        continue;
                     }
                     
                     readStage = READ_CMDID;
                     
                     if (id == CMD_IMAGE || id == CMD_COVER) {
-                        //System.out.println  ("GOT BINARY DATA");
+                        System.out.println  ("GOT BINARY DATA");
                         charMode = false;
                         //btoRead  = 0; // in binary mode we will read full image
                     }
@@ -478,14 +482,14 @@ public class ARProtocol {
                     cmdTokens.addElement(new Integer(id));
                     
                 } else {
-                    //System.out.println  ("got the rest/next part");
+                    System.out.println  ("got the rest/next part");
                     cmdTokens.addElement(aWord);
                 }
         
                 if (readingEndsAt == ENDS_AT_CEND) {        // command was read fully
                                     
-                    //System.out.println  ("FULL read");
-                                        int stage  = (readStage == READ_PART ? CanvasConsumer.LAST : CanvasConsumer.FULL);
+                    System.out.println  ("FULL read");
+                    int stage  = (readStage == READ_PART ? CanvasConsumer.LAST : CanvasConsumer.FULL);
                     
                     execCommand(cmdTokens,curCmdId,stage);
                     
@@ -494,13 +498,13 @@ public class ARProtocol {
                     
                 } else if (readingEndsAt == ENDS_AT_NOMORE  ) {    // command was read partially
                 
-                    //System.out.println  ("PARTIAL read");
-                                    if (streamedCmd(curCmdId)) {
+                   System.out.println  ("PARTIAL read");
+                   if (streamedCmd(curCmdId)) {
  
-                                            int stage  = (readStage == READ_CMDID ? CanvasConsumer.FIRST : CanvasConsumer.INTERMED);
+                        int stage  = (readStage == READ_CMDID ? CanvasConsumer.FIRST : CanvasConsumer.INTERMED);
                         execCommand(cmdTokens,curCmdId,stage);
 
-                                            readStage  = READ_PART;
+                        readStage  = READ_PART;
                         
                     } // other commands will be read further on next cycle
                 }
@@ -510,23 +514,23 @@ public class ARProtocol {
                 if (readStage == READ_NO) {    
                     // got header, this means we did not reset charMode flag, this is error
                     //controller.showAlert("Got header in binary mode ?");
-                    //System.out.println  ("Got header in binary mode ?");
+                    System.out.println  ("Got header in binary mode ?");
                     
                     charMode = true;
                     continue;
                     
                 } else if (readStage == READ_CMDID){
                     
-                                        //System.out.println  ("HANDLE binary command");
+                    System.out.println  ("HANDLE binary command");
                     execCommand(cmdTokens,curCmdId,CanvasConsumer.FIRST);
                     
-                                        //System.out.println  ("End of binary mode ?");
-                                    
-                                        // all were done inside binary handler        
-                                    charMode = true;
-                                         readStage = READ_NO;
-                                       curCmdId  = CMD_NO;
-                                    //continue;
+                    System.out.println  ("End of binary mode");
+                    
+                    // all were done inside binary handler	  
+                   charMode = true;
+                   readStage = READ_NO;
+                   curCmdId  = CMD_NO;
+                   //continue;
                                
                 }
             }
@@ -534,7 +538,7 @@ public class ARProtocol {
     }
             
     void openConnection() throws IOException {
-            //System.out.println  ("openConnection "+connectionURL);
+        //System.out.println  ("openConnection "+connectionURL);
         if (connection != null) {
             closeConnection();
         }
@@ -545,12 +549,12 @@ public class ARProtocol {
         
         //if (controller.isBtOn()) {
             if (connectionURL != null) {
-                        try {
-                            if (connectionURL.startsWith("comm:")) {    // COMM connection
-                                connection = (StreamConnection)Connector.open(connectionURL + ";baudrate=9600");
-                                } else {
-                           connection = (StreamConnection)Connector.open(connectionURL);
-                            }
+                try {
+                    if (connectionURL.startsWith("comm:")) {    // COMM connection
+                        connection = (StreamConnection)Connector.open(connectionURL + ";baudrate=9600");
+                    } else {
+                        connection = (StreamConnection)Connector.open(connectionURL);
+                    }
                     iStream = connection.openDataInputStream();
                     oStream = connection.openDataOutputStream();
 
@@ -559,7 +563,7 @@ public class ARProtocol {
                     throw new IOException("");
                 } 
         
-                        controller.arStatusChanged(Controller.CONNECTED);
+                controller.arStatusChanged(Controller.CONNECTED);
             } else {
                 throw new IOException("");
             }
@@ -569,7 +573,7 @@ public class ARProtocol {
     }
     
     public void setConnectionURL(String name_url_pass) {
-            //System.out.println  ("setConnectionURL "+name_url_pass);
+        //System.out.println  ("setConnectionURL "+name_url_pass);
         closeConnection();
         synchronized (runSignal) {
             runSignal.notifyAll();
@@ -587,16 +591,16 @@ public class ARProtocol {
     }
     
     public void closeConnection() {
-            //System.out.println  ("closeConnection");
-         try {
+        //System.out.println  ("closeConnection");
+        try {
             if (iStream != null) iStream.close();
         } catch (Exception e) { } // Might be closed already, doesn't matter.
         
-         try {
+        try {
             if (oStream != null) oStream.close();
         } catch (Exception e) { } // Might be closed already, doesn't matter.
         
-         try {
+        try {
             if (connection != null) connection.close();
         } catch (IOException e) { } // Might be closed already, doesn't matter.
 
@@ -607,45 +611,48 @@ public class ARProtocol {
         controller.arStatusChanged(Controller.DISCONNECTED);
     }
     
-    //private 
     public void doNextCommand() throws IOException {
 
         for (String cmd = getNextCommand(); cmd != null; cmd = getNextCommand()) {
-                
-
+ 
             try {
-                                byte[] bts;
+                byte[] bts;
                  
                 if (useUtf8) {
                     try {
-                                        bts = cmd.getBytes("UTF-8");
+                        bts = cmd.getBytes("UTF-8");
                     } catch (UnsupportedEncodingException e) {
-                                            controller.showAlert("UnsupportedEncodingException");
+                        controller.showAlert("UnsupportedEncodingException");
                         bts = cmd.getBytes();
                     }
                 } else {
                     bts = cmd.getBytes();
                 }
                 
-                        oStream.write(bts, 0, bts.length);
-                    oStream.writeChar(';');
-                    oStream.writeChar('\r');
+		System.out.println("Send Command "+cmd);
+
+                oStream.write(bts, 0, bts.length);
+                oStream.writeChar(';');
+                oStream.writeChar('\r');
+		    
                 if (flushErrors == 0 || (! controller.motoFixMenu)) {
-                            try {    // Motorola KRZR K1 always throws this exception; and call to flush() takes a lo-o-ot of time 
+                    try {    // Motorola KRZR K1 always throws this exception; and call to flush() takes a lo-o-ot of time 
                         oStream.flush();
                     } catch (IOException e) { 
                         flushErrors++;    
                         controller.showAlert("oStream.flush: "+e.getMessage()+"->"+e.getClass().getName());
                     }
                 }
-                                bts = null;
+                bts = null;
 
             } catch (IOException e) {
+	        System.out.println("doNextCommand() IOException "+e.getClass().getName());
                 //controller.showAlert("doNextCommand() IOException");
                 //controller.showAlertAsTitle("DNC IOEx "+e.getMessage()+"->"+e.getClass().getName());
                 
                 throw new IOException("Exception on send 1: "+e.getMessage());
             } catch (Exception e) {
+	        System.out.println("doNextCommand() Exception "+e.getClass().getName());
                 //controller.showAlert("doNextCommand() Exception "+e.getClass().getName());
                 //controller.showAlertAsTitle("DNC Ex "+e.getClass().getName());
                 //throw new IOException("Exception on send 2: "+e.getMessage());
@@ -680,10 +687,10 @@ public class ARProtocol {
     }
 
     public void queueCommand(int keycode, boolean pressed) {
-        //System.out.println("append key to the queue ("+keycode +" " + pressed + ") joystick="+ Canvas.FIRE+" "+Canvas.DOWN+" "+Canvas.UP+" "+Canvas.LEFT+" "+Canvas.RIGHT);
+        System.out.println("queueCommand ("+keycode +" " + pressed + ") joystick="+ Canvas.FIRE+" "+Canvas.DOWN+" "+Canvas.UP+" "+Canvas.LEFT+" "+Canvas.RIGHT);
         //controller.showAlert("queueCommand "+keycode+" p/r="+pressed);
         
-                String key = String.valueOf(keycode);
+        String key = String.valueOf(keycode);
         
         if (keycode >= 0 && keycode < 10) {
             key = "K"+String.valueOf(keycode);
@@ -699,14 +706,14 @@ public class ARProtocol {
             case Canvas.KEY_NUM7:  key = "7";break;
             case Canvas.KEY_NUM8:  key = "8";break;
             case Canvas.KEY_NUM9:  key = "9";break;
-             case Canvas.KEY_STAR:  key = "*";break;
+            case Canvas.KEY_STAR:  key = "*";break;
             case Canvas.KEY_NUM0:  key = "0";break;
             case Canvas.KEY_POUND: key = "#";break;
             default: 
-                                if (controller.cScreen.cf.isRealJoystick(keycode)) {
-                        //controller.showAlert("isRealJoystick");
+                if (controller.cScreen.cf.isRealJoystick(keycode)) {
+                    //controller.showAlert("isRealJoystick");
                     
-                            try {
+                    try {
                         switch (controller.cScreen.getGameAction(keycode)) {
                             case Canvas.FIRE:      key = "FIRE"; break;
                             case Canvas.UP:        key = "UP";   break;
@@ -716,19 +723,19 @@ public class ARProtocol {
                         }
                         break;
                     } catch (Exception e) {}
-                                }
+                }
             }
         }
         appendCommand("+CKEV: " + key + "," + (pressed ? "1" : "0"));
     }
 
     public void queueCommand(String message) {
-            //System.out.println("appendCommand " + message);
+         System.out.println("queueCommand " + message);
          appendCommand("Msg:" + message);
     }
 
     void appendCommand(String cmd) {
-            //System.out.println("appendCommand " + cmd);
+        //System.out.println("appendCommand " + cmd);
         synchronized (cmdQueue) {
             cmdQueue.addElement(cmd);
         }
@@ -737,38 +744,38 @@ public class ARProtocol {
         }        
     }
 
-        public Vector splitReplay(String Replay, int max, int startWith) {
+    public Vector splitReplay(String Replay, int max, int startWith) {
 
-                int chunks = (max > 0 ? max : 9999);  // 9999 - too big to be real
-                int idx = 0;
-                int i   = 0;
+        int chunks = (max > 0 ? max : 9999);  // 9999 - too big to be real
+        int idx = 0;
+        int i   = 0;
         
         Vector Out = new Vector();
         
         try {
-                    while (i<chunks) {
+            while (i<chunks) {
                 int idx2 = Replay.indexOf(",",idx);
                                 
-                                if (i >= startWith) {
+                if (i >= startWith) {
                     Out.addElement(Replay.substring(idx,idx2).trim());
-                                }
+                }
                                 
                 idx = idx2+1;
-                                i++;
-                   }
-              } catch (Exception e) {  // last element
-                    Out.addElement(Replay.substring(idx).trim());
+                i++;
+            }
+        } catch (Exception e) {  // last element
+            Out.addElement(Replay.substring(idx).trim());
         }
         
         return Out;
     }
         
     private void execCommand(Vector cmdTokens, int id, int stage) {
-                if (cmdTokens.size() <= 0) {
-                    return;
-                }
+        if (cmdTokens.size() == 0) {
+            return;
+        }
         
-        //System.out.println  ("execCommand " + id + " " + stage);
+        System.out.println  ("execCommand " + id + " " + stage);
         //controller.showAlert("execCommand " + id + " " + stage);
 
         switch (id) {
@@ -778,27 +785,27 @@ public class ARProtocol {
                 break;
                 
             /*case CMD_EXIT:
-                    controller.showAlert("controller.exit()");
+                controller.showAlert("controller.exit()");
                 controller.exit();
                 break;*/
                 
             case CMD_BG:
-                      controller.cScreen.cf.setColor(CanvasScreen.BG, cmdTokens);
+                controller.cScreen.cf.setColor(CanvasScreen.BG, cmdTokens);
                 break; 
             
             case CMD_CAPTION:
-                      controller.cScreen.cf.setCaption((String) cmdTokens.elementAt(1));
+                controller.cScreen.cf.setCaption((String) cmdTokens.elementAt(1));
                 break; 
                     
             case CMD_EFIELD:
-                    if (cmdTokens.size() > 3) {
+                if (cmdTokens.size() > 3) {
                     controller.setupEField((String) cmdTokens.elementAt(1),(String) cmdTokens.elementAt(2),(String) cmdTokens.elementAt(3),false);
                                  controller.showScr(Controller.EDIT_FORM);
                 }
                 break; 
                    
             case CMD_FG:
-                      controller.cScreen.cf.setColor(CanvasScreen.FG, cmdTokens);
+                controller.cScreen.cf.setColor(CanvasScreen.FG, cmdTokens);
                 break;  
                      
             case CMD_FMAN:
@@ -854,19 +861,19 @@ public class ARProtocol {
             
                 int vi = 2;
                 if (cmdTokens.size() > 1) {
-                            try {
-                                vi = (int) Integer.parseInt((String) cmdTokens.elementAt(1));
-                                } catch (NumberFormatException e) {
-                                //controller.showAlert("Incorrect data in Set(vibrate,...) command");
+                    try {
+                         vi = (int) Integer.parseInt((String) cmdTokens.elementAt(1));
+                    } catch (NumberFormatException e) {
+                         //controller.showAlert("Incorrect data in Set(vibrate,...) command");
                     }
                 }
-                            if (vi < 0) {
-                                break; // skip 
-                            }
-                            if (vi > 300) {
-                                vi = 300;
-                            }
-                 Display.getDisplay(controller).vibrate(100*vi);
+                if (vi < 0) {
+                    break; // skip 
+                }
+                if (vi > 300) {
+                    vi = 300;
+                }
+                Display.getDisplay(controller).vibrate(100*vi);
                 break;
                 
             case CMD_VOLUME:
@@ -886,12 +893,12 @@ public class ARProtocol {
                 break;    
             
             case CMD_GETSCRSIZE:
-                         queueCommand("SizeX("+controller.cScreen.CW+",)");
-                        queueCommand("SizeY("+controller.cScreen.CH+",)");
+                queueCommand("SizeX("+controller.cScreen.CW+",)");
+                queueCommand("SizeY("+controller.cScreen.CH+",)");
                 break;
 
             case CMD_GETCVRSIZE:
-                         queueCommand("CoverSize("+controller.cScreen.cf.getCoverSize()+",)");
+                queueCommand("CoverSize("+controller.cScreen.cf.getCoverSize()+",)");
                 break;
 
             case CMD_GETICSIZE:
@@ -899,15 +906,15 @@ public class ARProtocol {
                 break;
                 
             case CMD_GETICPAD:
-                         queueCommand("IconPadding("+controller.cScreen.cf.split+",)");
+                queueCommand("IconPadding("+controller.cScreen.cf.split+",)");
                 break;
             
             case CMD_GETVER:
-                         queueCommand("Version(,"+controller.getAppProperty("MIDlet-Version")+")");
+                queueCommand("Version(,"+controller.getAppProperty("MIDlet-Version")+")");
                 break;
 
             case CMD_GETPING:
-                         queueCommand("Ping");
+                queueCommand("Ping");
 
                 if (cmdTokens.size() > 1) {   // get timeout
                     keepaliveTimeout = Integer.parseInt(((String) cmdTokens.elementAt(1)));
@@ -920,55 +927,75 @@ public class ARProtocol {
                 if (keepaliveTimeout > 0) {
                     keepaliveCounter++;
                 }
-                    break;
+                break;
 
             case CMD_GETPASS:
-                    String connectionPass = "";
+                String connectionPass = "";
                 //System.out.println("CMD_GETPASS " + connectionNUP);
 
                 int li = connectionNUP.lastIndexOf('\n');
                 if (li > 0 && li < connectionNUP.length() - 1) {
                     connectionPass = connectionNUP.substring(li+1);
-                    }
+                }
                 if (connectionPass.equals("")) {
-                             controller.getPass();
+                    controller.getPass();
                 } else {
                     queueCommand("_PASSWORD_(,"+connectionPass+")");
                 }
                 break;
 
             case CMD_GETCURSOR:
-                                if (controller.cScreen.wm != null) {
-                             controller.cScreen.wm.sendCursorPos();
-                                }
+                if (controller.cScreen.wm != null) {
+                    controller.cScreen.wm.sendCursorPos();
+                }
                 break;
 
             case CMD_GETPLTF:
-                         queueCommand("Model(,"+System.getProperty("microedition.platform")+")");
+                queueCommand("Model(,"+System.getProperty("microedition.platform")+")");
                 break;
 
             case CMD_GETIMG:
                 
                 String item1 = (String) cmdTokens.elementAt(1);
-                    if (item1.equals("icon") || item1.equals("cover")) {
-                
-                }
-            
-                boolean isExists = controller.rmsSearch((String) cmdTokens.elementAt(1), (String) cmdTokens.elementAt(2));
-                String resp = (String) cmdTokens.elementAt(1)+","+(String) cmdTokens.elementAt(2)+")";
-                if (isExists) {
-                    resp = "IconExists("+resp;
-                } else {
-                    resp = "IconNotExists("+resp;
-                }
+        	String size = "";
+        	String name = "";
+
+        	if (item1.equals("icon")) {              // Get(is_exists,icon,size,name)
+        	    size = (String) cmdTokens.elementAt(2);
+        	    name = (String) cmdTokens.elementAt(3);
+        	} else if (item1.equals("cover")) {        // Get(is_exists,cover,name)
+        	    name = (String) cmdTokens.elementAt(2);
+        	} else {                      // old syntax Get(is_exists,size,name)
+        	    size = item1;
+        	    name = (String) cmdTokens.elementAt(1);
+        	}
+
+        	boolean isExists = controller.rmsSearch(size, name);
+        	System.out.println  ("IS EXISTS(): "+name+" >"+size+"< "+isExists);
+
+        	String resp;
+        	if (size.length() == 0) {
+        	    if (isExists) {
+                	resp = "CoverExists(,"+name+")";
+        	    } else {
+                	resp = "CoverNotExists(,"+name+")";
+        	    }
+        	} else {
+        	    resp = size+","+name+")";
+        	    if (isExists) {
+                	resp = "IconExists("+resp;
+        	    } else {
+                	resp = "IconNotExists("+resp;
+        	    }
+        	}
                 queueCommand(resp);
                 break;
                 
             default:
                 //System.out.println  ("execCommand(): Command or handler unknown");
-                        //controller.showAlert("execCommand(): Command or handler unknown");
+                //controller.showAlert("execCommand(): Command or handler unknown");
         }
-                //System.out.println  ("Clean up tokens");
+        System.out.println  ("Clean up tokens");
         cmdTokens.removeAllElements();
     }
     
@@ -982,8 +1009,8 @@ public class ARProtocol {
     private synchronized void scheduleKeepaliveTask() {
         
         TimerTask keepaliveCheck = new TimerTask() {
-                    public void run() { keepaliveTask(); }
-                };
+            public void run() { keepaliveTask(); }
+        };
         
         keepaliveTimer = new Timer();
         keepaliveTimer.scheduleAtFixedRate(keepaliveCheck, 0, (long) (keepaliveTimeout * 3000)); // x2 is not enough sometimes        
