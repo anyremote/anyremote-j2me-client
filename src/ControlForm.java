@@ -129,6 +129,7 @@ public class ControlForm extends CanvasConsumer {
         //nInfoItems  = 0;    redundant init
         statusItem  = "";
         captionItem = "";
+	namedCover  = "";
                 
         upEvent   = "";
         downEvent = "";
@@ -293,7 +294,7 @@ public class ControlForm extends CanvasConsumer {
     }
         
     public void setSkin(Vector vR) {
-        //System.out.println("setSkin");
+        //System.out.println("setSkin "+vR.size());
         String name   = (String) vR.elementAt(1);
         
         useJoystick = true;
@@ -362,17 +363,15 @@ public class ControlForm extends CanvasConsumer {
             } 
             i++;
         }
-                
+
         int newSkin = skin;
-        if (name.equals("default") ||
-            name.equals("3x4")) {
+        if (name.equals("default") || name.equals("3x4")) {
             newSkin = SK_DEFAULT;
-        } else if (name.equals("7x1") ||
-                   name.equals("bottomline")) {
-            newSkin = SK_7X1;
+        } else if (name.equals("7x1") || name.equals("bottomline")) {
+	    newSkin = SK_7X1;
 	    useCover = (cover != null || namedCover.length() > 0);
         }
-        
+
         if (skin      != newSkin   || 
             useTicker != newTicker || 
             useVolume != newVolume || 
@@ -380,25 +379,26 @@ public class ControlForm extends CanvasConsumer {
             curIcon   != newCur) {
                       
             skin  = newSkin;
-                        
+
             if (useTicker != newTicker) {
                 if (!newTicker) {
+
                     controller.cScreen.stopTicker();
                 }
             }
             useTicker = newTicker;
             useVolume = newVolume;
-            
-            resetIconSize(newSize, (icSize != newSize));
 
+            resetIconSize(newSize, (icSize != newSize));
             setPositions();
             setInfoData();
-                        
+ 
             while (newCur>=0 && xOffset[newCur]<0) newCur--; // cursor should be visible
             curIcon = newCur;
 
             controller.showScr(Controller.CONTROL_FORM);
         }
+	//System.out.println("setSkin EXIT"); 
     }
 
     public void setStatus(String s) {
@@ -883,7 +883,7 @@ public class ControlForm extends CanvasConsumer {
     }
         
     public void keyPressed(int keyCode) {
-        System.out.println("ControlForm.keyPressed "+keyCode);
+        //System.out.println("ControlForm.keyPressed "+keyCode);
         //controller.showAlertAsTitle("keyPressed " + keyCode);
         //controller.showAlert("keyPressed " + keyCode);
         if (useKeypad) {
@@ -918,7 +918,7 @@ public class ControlForm extends CanvasConsumer {
     }
     
     public void keyReleased(int keyCode) {
-        System.out.println("ControlForm.keyReleased" + keyCode);
+        //System.out.println("ControlForm.keyReleased" + keyCode);
         //controller.showAlert("keyReleased " + keyCode);
 
         clearPressed();
