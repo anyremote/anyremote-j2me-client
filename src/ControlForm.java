@@ -299,8 +299,6 @@ public class ControlForm extends CanvasConsumer {
         useJoystick = true;
         useKeypad   = true;
         useCover    = false;
-        cover       = null;
-        namedCover  = "";
         
         upEvent   = "";
         downEvent = "";
@@ -372,6 +370,7 @@ public class ControlForm extends CanvasConsumer {
         } else if (name.equals("7x1") ||
                    name.equals("bottomline")) {
             newSkin = SK_7X1;
+	    useCover = (cover != null || namedCover.length() > 0);
         }
         
         if (skin      != newSkin   || 
@@ -522,21 +521,21 @@ public class ControlForm extends CanvasConsumer {
     
     public void handleIfNeeded(String name, int size, Image img) {
     
-        if (size > 0) {
+        if (size > 0) {   // get updated icon
             for (int i=0;i<NUM_ICONS;i++) {
                 if (icons[i] == null && 
                     iconNames[i].equals(name) && 
                     icSize == size) {
-                    //controller.showAlert("ControlForm.handleIfNeeded "+name);
-                    icons[i] = img; 
+                    
+		    icons[i] = img; 
                     controller.showScr(Controller.CONTROL_FORM);     // repaint 
                 }
             }  
-        } else {        // cover
-            cover = img;
-            namedCover = "";
-            controller.showScr(Controller.CONTROL_FORM);     // repaint 
-        }
+        } else {   // get updated cover
+	    if (skin==SK_7X1) {
+		controller.showScr(Controller.CONTROL_FORM);     // repaint
+	    }
+	}
     }
                 
     public void redrawIcons() {
@@ -570,7 +569,7 @@ public class ControlForm extends CanvasConsumer {
     }
     
     public void drawScreen() {
-        System.out.println("ControlForm.drawScreen");
+        //System.out.println("ControlForm.drawScreen "+useCover);
         //controller.showAlert("ControlForm.drawScreen");
         
         setPositions(); // Recalculate positions
@@ -627,7 +626,7 @@ public class ControlForm extends CanvasConsumer {
                                 
                 controller.cScreen.gr.setColor(fg);
                 controller.cScreen.gr.drawString(statusItem, controller.cScreen.CW>>1, getStatusY(), Graphics.TOP|Graphics.HCENTER);
-		System.out.println("ControlForm.drawScreen() "+statusItem+" "+getStatusY());
+		//System.out.println("ControlForm.drawScreen() "+statusItem+" "+getStatusY());
                                 
                 if (useTicker) {
                     // will run ticker if string is long enough
@@ -678,9 +677,9 @@ public class ControlForm extends CanvasConsumer {
                         
         } catch (Exception e) {
             //controller.showAlert("Exception in ControlForm.drawScreen() "+e.getClass().getName()+" "+e.getMessage());
-            System.out.println("Exception in ControlForm.drawScreen() "+e.getClass().getName()+" "+e.getMessage());
+            //System.out.println("Exception in ControlForm.drawScreen() "+e.getClass().getName()+" "+e.getMessage());
         }
-	System.out.println("ControlForm.drawScreen() DONE");
+	//System.out.println("ControlForm.drawScreen() DONE");
     }
 
     public void drawCursor(int x, int y) {
@@ -1169,33 +1168,32 @@ public class ControlForm extends CanvasConsumer {
     }
     
     public void setData(Vector dataIn, int stage) {
-       System.out.println("ControlForm.setData "+stage);
+       //System.out.println("ControlForm.setData "+stage);
        //controller.showAlert("ControlForm.setData");
         
         if (stage == CanvasConsumer.FULL) {
-            useCover = false;
-            cover    = null;
+            useCover   = false;
+            cover      = null;
+	    namedCover = "";
         } else {
         
             try {
-                useCover = false;
-                cover    = null;
+                useCover   = false;
+                cover      = null;
                 namedCover = "";
                 
                 Vector data = new Vector();
                 useCover = controller.cScreen.receiveCover(data);
-                
+		
+                //System.out.println("ControlForm.setData use cover "+useCover+" "+((String) data.elementAt(0)));
                 if (useCover) {
                     String op = (String) data.elementAt(0);
                     if (op.equals("noname")) {
                        
-                       useCover = true;
                        cover    = (Image) data.elementAt(1);
-                       namedCover = "";
-
+ 
                     } else if (op.equals("by_name")) {
-                       useCover = true;
-                       cover    = null;
+                       
                        namedCover = (String) data.elementAt(1);
 
                     //} else { // if (op.equals("clear") {
@@ -1204,13 +1202,15 @@ public class ControlForm extends CanvasConsumer {
 
             } catch(Exception e1) {
                 // This could be normal if we want to clean up cover
-                controller.showAlert("Exception/setData " + e1.getClass().getName() + ": " + e1.getMessage());
-                useCover = false;
-                cover    = null;
+                //controller.showAlert("Exception/setData " + e1.getClass().getName() + ": " + e1.getMessage());
+                useCover   = false;
+		namedCover = "";
+                cover      = null;
             } catch (Error me) {
-                controller.showAlert("Error/setData "+me.getClass().getName() + ": " + me.getMessage());
-                useCover = false;
-                cover    = null;
+                //controller.showAlert("Error/setData "+me.getClass().getName() + ": " + me.getMessage());
+                useCover   = false;
+		namedCover = "";
+                cover      = null;
             }
         }
         controller.showScr(Controller.CONTROL_FORM);
