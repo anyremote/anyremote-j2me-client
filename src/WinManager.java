@@ -75,10 +75,10 @@ public class WinManager extends CanvasConsumer {
     }
         
     public void setData(Vector vR, int stage) {
-        System.out.println("WinManager.setData");
+        //System.out.println("WinManager.setData");
         try {
             String action = controller.protocol.getWord(true);
-            System.out.println("WinManager >"+action+"<");
+            //System.out.println("WinManager >"+action+"<");
             //controller.showAlert("WinManager >"+action+"<");
             
             if (action.equals("window") ||

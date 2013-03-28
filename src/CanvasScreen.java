@@ -229,7 +229,7 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
     
     public Image loadCachedCover(String name) {
         
-	System.out.println("loadCachedCover " + name);
+	//System.out.println("loadCachedCover " + name);
 	
         if (name.length() == 0) {
             return null;
