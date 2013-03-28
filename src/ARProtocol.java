@@ -650,13 +650,13 @@ public class ARProtocol {
                 bts = null;
 
             } catch (IOException e) {
-                System.out.println("doNextCommand() IOException "+e.getClass().getName());
+                //System.out.println("doNextCommand() IOException "+e.getClass().getName());
                 //controller.showAlert("doNextCommand() IOException");
                 //controller.showAlertAsTitle("DNC IOEx "+e.getMessage()+"->"+e.getClass().getName());
                 
                 throw new IOException("Exception on send 1: "+e.getMessage());
             } catch (Exception e) {
-                System.out.println("doNextCommand() Exception "+e.getClass().getName());
+                //System.out.println("doNextCommand() Exception "+e.getClass().getName());
                 //controller.showAlert("doNextCommand() Exception "+e.getClass().getName());
                 //controller.showAlertAsTitle("DNC Ex "+e.getClass().getName());
                 //throw new IOException("Exception on send 2: "+e.getMessage());
@@ -999,7 +999,7 @@ public class ARProtocol {
                 //System.out.println  ("execCommand(): Command or handler unknown");
                 //controller.showAlert("execCommand(): Command or handler unknown");
         }
-        //System.out.println  ("Clean up tokens");
+        //System.out.println  ("execCommand: Clean up tokens");
         cmdTokens.removeAllElements();
     }
     
