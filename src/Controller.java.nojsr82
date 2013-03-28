@@ -1064,9 +1064,14 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 				    name = name+"_"+max;
 				}
             			dos.writeUTF(name);
+				
+				if (!isIcon) {  // for cover it needs to store real size (used to decode)
+				    dos.writeInt(width);
+				    dos.writeInt(height);
+				}
             
             			for (int k = 0; k < imgRgbData.length; k++) {
-					dos.writeInt(imgRgbData[k]);
+				    dos.writeInt(imgRgbData[k]);
             			}
             
             			// Open record store, create if it doesn't exist
@@ -1101,8 +1106,15 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
                     				imagename = din.readUTF();
                                         	//System.out.println("Next: name is >" + imagename + "<");
                                         	if (name.equals(imagename)) {
+						
                     					int remaining =  (b.length-imagename.getBytes().length-2)/4;
                                         		//System.out.println("found size="+remaining);
+							
+							if (!isIcon) {
+							    width  = din.readInt();
+							    height = din.readInt();
+							    remaining -= 2;
+							}
                     
                     					int[] rawdata = new int[remaining];
                     
@@ -1138,7 +1150,7 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
                 }
 
         	return image;
-	}        
+	} 
 	/////////////////////////////////////////////////////////////
         //
         // Search form stuff
