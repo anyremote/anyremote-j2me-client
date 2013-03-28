@@ -650,13 +650,13 @@ public class ARProtocol {
                 bts = null;
 
             } catch (IOException e) {
-                System.out.println("doNextCommand() IOException "+e.getClass().getName());
+                //System.out.println("doNextCommand() IOException "+e.getClass().getName());
                 //controller.showAlert("doNextCommand() IOException");
                 //controller.showAlertAsTitle("DNC IOEx "+e.getMessage()+"->"+e.getClass().getName());
                 
                 throw new IOException("Exception on send 1: "+e.getMessage());
             } catch (Exception e) {
-                System.out.println("doNextCommand() Exception "+e.getClass().getName());
+                //System.out.println("doNextCommand() Exception "+e.getClass().getName());
                 //controller.showAlert("doNextCommand() Exception "+e.getClass().getName());
                 //controller.showAlertAsTitle("DNC Ex "+e.getClass().getName());
                 //throw new IOException("Exception on send 2: "+e.getMessage());
@@ -963,18 +963,21 @@ public class ARProtocol {
                 String item1 = (String) cmdTokens.elementAt(1);
         	String size = "";
         	String name = "";
+		boolean isIcon = true;
 
         	if (item1.equals("icon")) {              // Get(is_exists,icon,size,name)
                     size = (String) cmdTokens.elementAt(2);
                     name = (String) cmdTokens.elementAt(3);
         	} else if (item1.equals("cover")) {        // Get(is_exists,cover,name)
                     name = (String) cmdTokens.elementAt(2);
+		    size = size + controller.cScreen.cf.getCoverSize();
+		    isIcon = false;
         	} else {                      // old syntax Get(is_exists,size,name)
                     size = item1;
                     name = (String) cmdTokens.elementAt(1);
         	}
 
-        	boolean isExists = controller.rmsSearch(size, name);
+        	boolean isExists = controller.rmsSearch(size, name,isIcon);
         	//System.out.println  ("IS EXISTS(): "+name+" >"+size+"< "+isExists);
 
         	String resp;
@@ -999,7 +1002,7 @@ public class ARProtocol {
                 //System.out.println  ("execCommand(): Command or handler unknown");
                 //controller.showAlert("execCommand(): Command or handler unknown");
         }
-        //System.out.println  ("Clean up tokens");
+        //System.out.println  ("execCommand: Clean up tokens");
         cmdTokens.removeAllElements();
     }
     

@@ -983,11 +983,13 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 		}
 	}
         
-	public boolean rmsSearch(String size, String name) {
+	public boolean rmsSearch(String size, String name, boolean isIcon) {
 		RecordStore rStore = null;
 		
-		String tag = (size.length() == 0 ? "icons"+size : "covers");
-		
+		String tag = (isIcon ? "icons"+size : "covers");
+		if (!isIcon) {
+		    name = name+"_"+size;
+		}
         	try {
             		rStore = RecordStore.openRecordStore(tag, true);
 			int i = rStore.getNumRecords();
@@ -1021,15 +1023,17 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 			} catch (Exception e1) { }
                 }
 		return false;
-	}
+	 }
 	
-        public Image rmsHandle(boolean save, int[] imgRgbData, int width, int height, String name, boolean isIcon) {
+         public Image rmsHandle(boolean save, int[] imgRgbData, int width, int height, String name, boolean isIcon) {
         	
-                //System.out.println("rmsHandle save "+save);
+                //System.out.println("rmsHandle save "+save+" "+name+" "+width);
                 
                 RecordStore rStore = null;
         	Image       image  = null;
         	try {
+			String tag;
+			
 			if (isIcon) {
 				String ww = "16";
 				if (width == 32)  ww = "32";
@@ -1043,7 +1047,6 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 			} else {
 				tag = "covers";
 			}
-			
             		rStore = RecordStore.openRecordStore(tag, true);
 			
 			int i = rStore.getNumRecords();
@@ -1054,6 +1057,12 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
             			// the record bytes in needed form)
             			ByteArrayOutputStream baos = new ByteArrayOutputStream();
             			DataOutputStream dos = new DataOutputStream(baos);
+				
+				if (!isIcon) {
+				    // cover can be rectangular
+				    int max = (width > height ? width : height);
+				    name = name+"_"+max;
+				}
             			dos.writeUTF(name);
             
             			for (int k = 0; k < imgRgbData.length; k++) {
@@ -1075,7 +1084,12 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
                 		boolean found = false;
                                 
                                 //System.out.println("rmsHandle number of records in store = " + i);
-            
+                                
+				if (!isIcon) {
+				    int max = (width > height ? width : height);
+				    name = name+"_"+max;
+				}
+				
             			for(int j = 1; j < i + 1; j++) {
                 
                     			b = rStore.getRecord(j);
@@ -1092,7 +1106,7 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
                     
                     					int[] rawdata = new int[remaining];
                     
-                    					for(int k =0 ;k<rawdata.length ;k++) {
+                    					for(int k=0 ;k<rawdata.length ;k++) {
                         					rawdata[k] = din.readInt();
 								//System.out.println("createRGBImage "+k+"="+rawdata[k]);
                     					}
@@ -1115,7 +1129,7 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
                         }
   
         	} catch (Exception e) {
-                	//System.out.println("rmsHandle Exception 1");
+                	System.out.println("rmsHandle Exception "+e.getMessage());
                 	return null;
 		} finally {
 			if (rStore != null) try {
@@ -1124,8 +1138,7 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
                 }
 
         	return image;
-	} 
-        
+	}        
 	/////////////////////////////////////////////////////////////
         //
         // Search form stuff
