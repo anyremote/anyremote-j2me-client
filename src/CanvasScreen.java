@@ -205,7 +205,7 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
     }
     
     public Image loadCachedImage(String name, int size, boolean useDefault) {
-        System.out.println("loadCachedImage " + name + " cache size="+iconNameCache.size());
+        //System.out.println("loadCachedImage " + name + " cache size="+iconNameCache.size());
                 
         String name_sz = name + String.valueOf(size);
  
@@ -253,7 +253,7 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
     }
 
     public Image loadImage(String name, int size, boolean isIcon) {
-        System.out.println("loadImage "+name+" "+size);
+        //System.out.println("loadImage "+name+" "+size);
     
         if (name.equals("none")) {
 	    return null;
