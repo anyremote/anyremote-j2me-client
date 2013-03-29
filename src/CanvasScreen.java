@@ -124,7 +124,7 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
 
         popupText        = new StringBuffer(16);  // enough for "Please wait !" :-)
         
-        Image defaultIm = loadImage("file",16); // add default ocon
+        Image defaultIm = loadImage("file",16,true); // add default ocon
         iconNameCache.addElement("file16");
         iconCache.addElement(defaultIm); 
         
@@ -215,7 +215,7 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
         if (found >= 0) {
             im = (Image) iconCache.elementAt(found);
         } else {
-            im = loadImage(name,size);
+            im = loadImage(name,size,true);
              
             synchronized (iconCacheMutex) {
                 if (im != null) {
@@ -240,7 +240,8 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
         if (found >= 0) {
             im = (Image) coverCache.elementAt(found);
         } else {
-            im = loadImage(name,0);
+            
+	    im = loadImage(name,cf.getCoverSize(),false);
              
             synchronized (iconCacheMutex) {
                 if (im != null) {
@@ -251,24 +252,24 @@ public class CanvasScreen extends GameCanvas implements CommandListener {
         return im;
     }
 
-    public Image loadImage(String name, int size) {
+    public Image loadImage(String name, int size, boolean isIcon) {
         //System.out.println("loadImage "+name+" "+size);
     
         if (name.equals("none")) {
 	    return null;
 	}
 	
-        if (size > 0) {  // no covers supplied in *jar
+        if (isIcon) {  // no covers supplied in *jar
             try {
                 return Image.createImage("/" + String.valueOf(size) + "/" + name+".png");
             } catch (IOException e) { 
             }
         }
                         
-        Image ri = controller.rmsHandle(false,null,size,size,name,(size > 0));    // try to search in RMS
+        Image ri = controller.rmsHandle(false,null,size,size,name,isIcon);    // try to search in RMS
         
         if (ri == null) {
-            if (size > 0){
+            if (isIcon){
                 String name_sz = name + String.valueOf(size);
                 if (!iconRequested.contains(name_sz)) {    // need to send request for upload
                     controller.protocol.queueCommand("_GET_ICON_(" + String.valueOf(size) + ","+name+")");

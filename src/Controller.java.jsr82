@@ -971,7 +971,7 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
         //
        
         public void rmsClean(boolean icons, boolean covers) {
-                //System.out.println("rmsClean");
+                System.out.println("rmsClean "+icons+" "+covers);
 
 		if (icons) {
 			 try {
@@ -997,10 +997,13 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 		}
 	}
         
-	public boolean rmsSearch(String size, String name) {
+	public boolean rmsSearch(String size, String name, boolean isIcon) {
 		RecordStore rStore = null;
 		
-		String tag = (size.length() == 0 ? "icons"+size : "covers");
+		String tag = (isIcon ? "icons"+size : "covers");
+		if (!isIcon) {
+		    name = name+"_"+size;
+		}
         	try {
             		rStore = RecordStore.openRecordStore(tag, true);
 			int i = rStore.getNumRecords();
@@ -1038,7 +1041,7 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 	
         public Image rmsHandle(boolean save, int[] imgRgbData, int width, int height, String name, boolean isIcon) {
         	
-                //System.out.println("rmsHandle save "+save);
+                System.out.println("rmsHandle save "+save+" "+name+" "+width);
                 
                 RecordStore rStore = null;
         	Image       image  = null;
@@ -1061,26 +1064,37 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
             		rStore = RecordStore.openRecordStore(tag, true);
 			
 			int i = rStore.getNumRecords();
-			//System.out.println("rmsHandle number of records in store "+tag+" = " + i);
+			System.out.println("rmsHandle number of records in store "+tag+" = " + i);
 
         		if (save) {
             			// Write image data to output stream (in order to get 
             			// the record bytes in needed form)
             			ByteArrayOutputStream baos = new ByteArrayOutputStream();
             			DataOutputStream dos = new DataOutputStream(baos);
+				
+				if (!isIcon) {
+				    // cover can be rectangular
+				    int max = (width > height ? width : height);
+				    name = name+"_"+max;
+				}
             			dos.writeUTF(name);
-            
+				System.out.println("rmsHandle Save aaaa");
+				if (!isIcon) {  // for cover it needs to store real size (used to decode)
+				    dos.writeInt(width);
+				    dos.writeInt(height);
+				}
+                                System.out.println("rmsHandle Saved bbbb");
             			for (int k = 0; k < imgRgbData.length; k++) {
-					dos.writeInt(imgRgbData[k]);
+				    dos.writeInt(imgRgbData[k]);
             			}
-            
+                                System.out.println("rmsHandle Saved cccc");
             			// Open record store, create if it doesn't exist
             			rStore.addRecord(baos.toByteArray(), 0, baos.toByteArray().length);
-
+                                System.out.println("rmsHandle Saved dddd");
 				dos.close();
                    		dos = null;
                                 
-                                //System.out.println("rmsHandle Saved >"+name+"<");
+                                System.out.println("rmsHandle Saved >"+name+"<");
 			} else {
 
         			byte[] b = null;
@@ -1088,8 +1102,13 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 
                 		boolean found = false;
                                 
-                                //System.out.println("rmsHandle number of records in store = " + i);
-            
+                                System.out.println("rmsHandle number of records in store = " + i);
+                                
+				if (!isIcon) {
+				    int max = (width > height ? width : height);
+				    name = name+"_"+max;
+				}
+				
             			for(int j = 1; j < i + 1; j++) {
                 
                     			b = rStore.getRecord(j);
@@ -1099,21 +1118,28 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
                     				DataInputStream       din = new DataInputStream(bin);
                     
                     				imagename = din.readUTF();
-                                        	//System.out.println("Next: name is >" + imagename + "<");
+                                        	System.out.println("Next: name is >" + imagename + "<");
                                         	if (name.equals(imagename)) {
+						
                     					int remaining =  (b.length-imagename.getBytes().length-2)/4;
-                                        		//System.out.println("found size="+remaining);
+                                        		System.out.println("found size="+remaining);
+							
+							if (!isIcon) {
+							    width  = din.readInt();
+							    height = din.readInt();
+							    remaining -= 2;
+							}
                     
                     					int[] rawdata = new int[remaining];
                     
-                    					for(int k =0 ;k<rawdata.length ;k++) {
+                    					for(int k=0 ;k<rawdata.length ;k++) {
                         					rawdata[k] = din.readInt();
 								//System.out.println("createRGBImage "+k+"="+rawdata[k]);
                     					}
                    				
                                                 	//System.out.println("createRGBImage");
                     					image = Image.createRGBImage(rawdata, width, height, true); 
-                                                	//System.out.println("createRGBImage OK");
+                                                	System.out.println("createRGBImage OK");
                                                 	found = true;
                                         	}
                     
@@ -1129,7 +1155,7 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
                         }
   
         	} catch (Exception e) {
-                	//System.out.println("rmsHandle Exception 1");
+                	System.out.println("rmsHandle Exception "+e.getMessage());
                 	return null;
 		} finally {
 			if (rStore != null) try {

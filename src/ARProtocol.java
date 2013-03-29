@@ -160,17 +160,17 @@ public class ARProtocol {
                 } while (reconnect == true);
 
             } catch (IOException e) {
-                //System.out.println  ("run() IOException");
+                System.out.println  ("run() IOException");
                 //controller.showAlertAsTitle("run() IOException "+e.getMessage());
                 stopKeepaliveTimer();
                 continue;            
             } catch (InterruptedException e) {
-                //System.out.println  ("run() InterruptedException");
+                System.out.println  ("run() InterruptedException");
                 //controller.showAlertAsTitle("run() InterruptedException");
                 stopKeepaliveTimer();
                 throw new RuntimeException("InterruptedException "+e.getMessage());    
             } catch (Exception e) {
-                //System.out.println  ("run() Exception "+e.getClass().getName()+" "+e.getMessage());
+                System.out.println  ("run() Exception "+e.getClass().getName()+" "+e.getMessage());
                 //controller.showAlertAsTitle("run() Exception "+e.getClass().getName());
             }
             stopKeepaliveTimer();
@@ -632,7 +632,7 @@ public class ARProtocol {
                     bts = cmd.getBytes();
                 }
                 
-                //System.out.println("Send Command "+cmd);
+                System.out.println("Send Command "+cmd+" "+bts.length);
 
                 oStream.write(bts, 0, bts.length);
                 oStream.writeChar(';');
@@ -641,7 +641,7 @@ public class ARProtocol {
                 if (flushErrors == 0 || (! controller.motoFixMenu)) {
                     try {    // Motorola KRZR K1 always throws this exception; and call to flush() takes a lo-o-ot of time 
                         oStream.flush();
-			//System.out.println("Send Command flushed");
+			System.out.println("Send Command flushed");
                     } catch (IOException e) { 
                         flushErrors++;    
                         controller.showAlert("oStream.flush: "+e.getMessage()+"->"+e.getClass().getName());
@@ -650,13 +650,13 @@ public class ARProtocol {
                 bts = null;
 
             } catch (IOException e) {
-                //System.out.println("doNextCommand() IOException "+e.getClass().getName());
+                System.out.println("doNextCommand() IOException "+e.getClass().getName());
                 //controller.showAlert("doNextCommand() IOException");
                 //controller.showAlertAsTitle("DNC IOEx "+e.getMessage()+"->"+e.getClass().getName());
                 
                 throw new IOException("Exception on send 1: "+e.getMessage());
             } catch (Exception e) {
-                //System.out.println("doNextCommand() Exception "+e.getClass().getName());
+                System.out.println("doNextCommand() Exception "+e.getClass().getName());
                 //controller.showAlert("doNextCommand() Exception "+e.getClass().getName());
                 //controller.showAlertAsTitle("DNC Ex "+e.getClass().getName());
                 //throw new IOException("Exception on send 2: "+e.getMessage());
@@ -963,22 +963,25 @@ public class ARProtocol {
                 String item1 = (String) cmdTokens.elementAt(1);
         	String size = "";
         	String name = "";
+		boolean isIcon = true;
 
         	if (item1.equals("icon")) {              // Get(is_exists,icon,size,name)
                     size = (String) cmdTokens.elementAt(2);
                     name = (String) cmdTokens.elementAt(3);
         	} else if (item1.equals("cover")) {        // Get(is_exists,cover,name)
                     name = (String) cmdTokens.elementAt(2);
+		    size = size + controller.cScreen.cf.getCoverSize();
+		    isIcon = false;
         	} else {                      // old syntax Get(is_exists,size,name)
                     size = item1;
                     name = (String) cmdTokens.elementAt(1);
         	}
 
-        	boolean isExists = controller.rmsSearch(size, name);
+        	boolean isExists = controller.rmsSearch(size, name,isIcon);
         	//System.out.println  ("IS EXISTS(): "+name+" >"+size+"< "+isExists);
 
         	String resp;
-        	if (size.length() == 0) {
+        	if (isIcon) {
                     if (isExists) {
                 	resp = "CoverExists(,"+name+")";
                     } else {
