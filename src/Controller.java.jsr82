@@ -998,6 +998,8 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 	}
         
 	public boolean rmsSearch(String size, String name, boolean isIcon) {
+		System.out.println("rmsSearch"+name+" "+size);
+		
 		RecordStore rStore = null;
 		
 		String tag = (isIcon ? "icons"+size : "covers");
@@ -1011,6 +1013,8 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
 			byte[] b = null;
 			String imagename = null;
 			
+			System.out.println("rmsSearch number of records in store "+tag+" = " + i);
+			
 			for(int j = 1; j < i + 1; j++) {
 
                     		b = rStore.getRecord(j);
@@ -1022,6 +1026,8 @@ public class Controller extends MIDlet implements CommandListener, Runnable  {
                    		bin.reset();
                     		din.close();
                     		din = null;
+				
+				System.out.println("rmsSearch check "+name+"  "+imagename);
 				
 				if (name.equals(imagename)) {
 					return true;

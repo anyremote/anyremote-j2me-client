@@ -112,7 +112,10 @@ public class WinManager extends CanvasConsumer {
 
                             // Redraw if this image was queued for upload from ControlForm
                             controller.cScreen.cf.handleIfNeeded(iName,imW,screen);
-
+			    if (controller.cScreen.lf != null) {
+                                controller.cScreen.lf.handleIfNeeded(iName);
+			    }
+ 
                             int argb[] = new int[imW*imH];
                             screen.getRGB(argb,0,imW,0,0,imW,imH);
                             controller.rmsHandle(true,argb,imW,imH,iName,true);

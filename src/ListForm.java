@@ -101,6 +101,13 @@ public class ListForm extends CanvasConsumer  {
 			}
                         return;   // do not switch to list form
                         
+                } else if (oper.equals("icon")) {
+ 		
+			panel.setDefaultIcon((String) vR.elementAt(2));
+			if (controller.cScreen.currentScreen == this) {
+				showScreen();
+			}
+			
                 } else if (oper.equals("select")) {
 			
 			try { 
@@ -348,6 +355,14 @@ public class ListForm extends CanvasConsumer  {
 		//controller.cScreen.resumeTicker();
         }      
             
+    public void handleIfNeeded(String name) {
+	if (panel.defIcon.equals(name)) {
+            if (controller.cScreen.currentScreen == this) {
+		 showScreen();
+            }
+	}
+    }
+    
 	public void fullscreenBkgr() {
         	controller.cScreen.flushFullScreen(panel.bg);
 	}

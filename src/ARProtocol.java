@@ -156,7 +156,7 @@ public class ARProtocol {
                     synchronized (runSignal) {              // We wants to receive alarms from server!
                          runSignal.wait(SLEEP_TIME); 
                     }
-                    
+                   
                 } while (reconnect == true);
 
             } catch (IOException e) {
@@ -179,7 +179,7 @@ public class ARProtocol {
     }
     
     private int cmdId(String header) {
-        //System.out.println  ("cmdId "+header);
+        System.out.println  ("cmdId "+header);
         //controller.showAlert("cmdId: "+header);
         
         if (header.equals("Set(bg")) {
@@ -450,7 +450,7 @@ public class ARProtocol {
 
                 if (readStage == READ_NO) {    // got header
 
-                    //System.out.println  ("got header " + aWord);
+                    System.out.println  ("got header " + aWord);
                     //controller.showAlert("got header " + aWord);
                     
                     if (cmdTokens.size() > 0) {
@@ -594,7 +594,7 @@ public class ARProtocol {
     }
     
     public void closeConnection() {
-        //System.out.println  ("closeConnection");
+        System.out.println  ("closeConnection");
         try {
             if (iStream != null) iStream.close();
         } catch (Exception e) { } // Might be closed already, doesn't matter.
@@ -617,7 +617,7 @@ public class ARProtocol {
     public void doNextCommand() throws IOException {
 
         for (String cmd = getNextCommand(); cmd != null; cmd = getNextCommand()) {
- 
+            System.out.println("doNextCommand next command "+cmd);
             try {
                 byte[] bts;
                  
@@ -691,7 +691,7 @@ public class ARProtocol {
     }
 
     public void queueCommand(int keycode, boolean pressed) {
-        //System.out.println("queueCommand ("+keycode +" " + pressed + ") joystick="+ Canvas.FIRE+" "+Canvas.DOWN+" "+Canvas.UP+" "+Canvas.LEFT+" "+Canvas.RIGHT);
+        System.out.println("queueCommand ("+keycode +" " + pressed + ") joystick="+ Canvas.FIRE+" "+Canvas.DOWN+" "+Canvas.UP+" "+Canvas.LEFT+" "+Canvas.RIGHT);
         //controller.showAlert("queueCommand "+keycode+" p/r="+pressed);
         
         String key = String.valueOf(keycode);
@@ -734,7 +734,7 @@ public class ARProtocol {
     }
 
     public void queueCommand(String message) {
-         //System.out.println("queueCommand " + message);
+         System.out.println("queueCommand " + message);
          appendCommand("Msg:" + message);
     }
 
@@ -981,7 +981,7 @@ public class ARProtocol {
         	//System.out.println  ("IS EXISTS(): "+name+" >"+size+"< "+isExists);
 
         	String resp;
-        	if (isIcon) {
+        	if (!isIcon) {
                     if (isExists) {
                 	resp = "CoverExists(,"+name+")";
                     } else {

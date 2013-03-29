@@ -54,6 +54,7 @@ public class CanvasPanel {
     Vector data;
     Vector icons;
     Vector selIdxes;
+    String defIcon;
     
     boolean showCursor;
     boolean useTicker;
@@ -86,12 +87,13 @@ public class CanvasPanel {
         bg = bgc;
         sl = slc;
  
-        cpFont        = fn;
+        cpFont     = fn;
         useMode    = mode;
         data       = new Vector();
         icons      = new Vector();
         selIdxes   = new Vector();
         useTicker  = true;
+	defIcon    = "";
         showCursor = (useMode == LIST);
     }
         
@@ -128,6 +130,13 @@ public class CanvasPanel {
 
     public void setFont(int start, Vector defs) {
         cpFont = controller.cScreen.getFontBySpec(defs, start);
+    }
+
+    public void setDefaultIcon(String name) {
+        defIcon = name;
+	if (defIcon.equals("none")) {
+	    defIcon = "";
+	}
     }
 
     public void removeAll() {
@@ -397,9 +406,11 @@ public class CanvasPanel {
                 
         controller.cScreen.gr.setClip(X, Y, W, H);
         controller.cScreen.gr.setFont(cpFont);
+	
+	boolean iconed = (useIcons || defIcon.length() > 0);
                 
         int FH = controller.cScreen.gr.getFont().getHeight();
-        if (useIcons && FH < ICON_SIZE) {
+        if (iconed && FH < ICON_SIZE) {
             FH = ICON_SIZE;
         }
 
@@ -414,11 +425,11 @@ public class CanvasPanel {
         int cap = data.size();
         
         int delta = -1;
-        if (useIcons) {
+        if (iconed) {
             delta = (ICON_SIZE - FH)/2;
         }
-        int xStart = (useIcons ? X+ICON_SIZE+1 : X);
-        int xWidth = (useIcons ? W-ICON_SIZE-1 : W);
+        int xStart = (iconed ? X+ICON_SIZE+1 : X);
+        int xWidth = (iconed ? W-ICON_SIZE-1 : W);
                
         while (cap > idx) {
             isCursor = (idx == idxSelect && showCursor) ;
@@ -427,10 +438,13 @@ public class CanvasPanel {
               
             int yStart = (delta > 0 ? drawY+delta : drawY);
 
-            if (useIcons) {
+            if (iconed) {
                 //System.out.println("CanvasPanel.draw drawImage");
+		
+		String icon_name = (useIcons ? (String) icons.elementAt(idx) : defIcon);
+		
                 try {
-                    Image ic = controller.cScreen.loadCachedImage((String) icons.elementAt(idx), 16, true);
+                    Image ic = controller.cScreen.loadCachedImage(icon_name, 16, true);
                     if (ic != null) {
                         controller.cScreen.gr.drawImage(ic,X, drawY, Graphics.LEFT | Graphics.TOP);
                     }
