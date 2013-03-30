@@ -1216,19 +1216,18 @@ public class ControlForm extends CanvasConsumer {
         controller.showScr(Controller.CONTROL_FORM);
     }
     
-    
     public int getCoverSize() {
-        if (skin == SK_7X1 && useTicker) {
-
-            int yTop    = getStatusY() + (cfFont.getHeight()<<2);    // title + status size
+        int ret = -1;
+	if (skin == SK_7X1 && useTicker) {
+            int yTop	= getStatusY() + (cfFont.getHeight()<<2);    // title + status size
             int yBottom = yCorner;
             if (useVolume) {
-                yBottom -= 8;
+            	yBottom -= 8;
             }
             int sz = yBottom - yTop;
-            return controller.cScreen.CW > sz ? sz : controller.cScreen.CW;
+	    ret = controller.cScreen.CW > sz ? sz : controller.cScreen.CW;
         }
-        return -1;
+        return ret;
     }
                
     public void hideScreen() {
@@ -1254,8 +1253,8 @@ public class ControlForm extends CanvasConsumer {
                 
             synchronized (controller.cScreen.drawMutex) {
                 controller.cScreen.gr.setFont(cfFont);
-             }
-             setInfoData();
+            }
+            setInfoData();
         }        
         if (useTicker) {
             controller.cScreen.setTVisuals(cfFont, 15, fg, bg, Graphics.HCENTER, true);

@@ -160,17 +160,17 @@ public class ARProtocol {
                 } while (reconnect == true);
 
             } catch (IOException e) {
-                System.out.println  ("run() IOException");
+                //System.out.println  ("run() IOException");
                 //controller.showAlertAsTitle("run() IOException "+e.getMessage());
                 stopKeepaliveTimer();
                 continue;            
             } catch (InterruptedException e) {
-                System.out.println  ("run() InterruptedException");
+                //System.out.println  ("run() InterruptedException");
                 //controller.showAlertAsTitle("run() InterruptedException");
                 stopKeepaliveTimer();
                 throw new RuntimeException("InterruptedException "+e.getMessage());    
             } catch (Exception e) {
-                System.out.println  ("run() Exception "+e.getClass().getName()+" "+e.getMessage());
+                //System.out.println  ("run() Exception "+e.getClass().getName()+" "+e.getMessage());
                 //controller.showAlertAsTitle("run() Exception "+e.getClass().getName());
             }
             stopKeepaliveTimer();
@@ -179,7 +179,7 @@ public class ARProtocol {
     }
     
     private int cmdId(String header) {
-        System.out.println  ("cmdId "+header);
+        //System.out.println  ("cmdId "+header);
         //controller.showAlert("cmdId: "+header);
         
         if (header.equals("Set(bg")) {
@@ -594,7 +594,7 @@ public class ARProtocol {
     }
     
     public void closeConnection() {
-        System.out.println  ("closeConnection");
+        //System.out.println  ("closeConnection");
         try {
             if (iStream != null) iStream.close();
         } catch (Exception e) { } // Might be closed already, doesn't matter.
@@ -616,8 +616,15 @@ public class ARProtocol {
     
     public void doNextCommand() throws IOException {
 
-        for (String cmd = getNextCommand(); cmd != null; cmd = getNextCommand()) {
-            System.out.println("doNextCommand next command "+cmd);
+        // clashes with input stream, so do this one-by-one
+        //for (String cmd = getNextCommand(); cmd != null; cmd = getNextCommand()) {
+	   
+	    String cmd = getNextCommand();
+	    if (cmd == null) {
+	        return;
+	    }
+	   
+            //System.out.println("doNextCommand next command "+cmd);
             try {
                 byte[] bts;
                  
@@ -632,7 +639,7 @@ public class ARProtocol {
                     bts = cmd.getBytes();
                 }
                 
-                System.out.println("Send Command "+cmd+" "+bts.length);
+                //System.out.println("Send Command "+cmd+" "+bts.length);
 
                 oStream.write(bts, 0, bts.length);
                 oStream.writeChar(';');
@@ -641,14 +648,14 @@ public class ARProtocol {
                 if (flushErrors == 0 || (! controller.motoFixMenu)) {
                     try {    // Motorola KRZR K1 always throws this exception; and call to flush() takes a lo-o-ot of time 
                         oStream.flush();
-			System.out.println("Send Command flushed");
+			//System.out.println("Send Command flushed");
                     } catch (IOException e) { 
                         flushErrors++;    
                         controller.showAlert("oStream.flush: "+e.getMessage()+"->"+e.getClass().getName());
                     }
                 }
                 bts = null;
-
+		
             } catch (IOException e) {
                 System.out.println("doNextCommand() IOException "+e.getClass().getName());
                 //controller.showAlert("doNextCommand() IOException");
@@ -661,7 +668,7 @@ public class ARProtocol {
                 //controller.showAlertAsTitle("DNC Ex "+e.getClass().getName());
                 //throw new IOException("Exception on send 2: "+e.getMessage());
             } 
-        }
+        //}
     }
     
     private String getNextCommand() {
@@ -691,7 +698,7 @@ public class ARProtocol {
     }
 
     public void queueCommand(int keycode, boolean pressed) {
-        System.out.println("queueCommand ("+keycode +" " + pressed + ") joystick="+ Canvas.FIRE+" "+Canvas.DOWN+" "+Canvas.UP+" "+Canvas.LEFT+" "+Canvas.RIGHT);
+        //System.out.println("queueCommand ("+keycode +" " + pressed + ") joystick="+ Canvas.FIRE+" "+Canvas.DOWN+" "+Canvas.UP+" "+Canvas.LEFT+" "+Canvas.RIGHT);
         //controller.showAlert("queueCommand "+keycode+" p/r="+pressed);
         
         String key = String.valueOf(keycode);
@@ -734,7 +741,7 @@ public class ARProtocol {
     }
 
     public void queueCommand(String message) {
-         System.out.println("queueCommand " + message);
+         //System.out.println("queueCommand " + message);
          appendCommand("Msg:" + message);
     }
 
