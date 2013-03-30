@@ -450,7 +450,7 @@ public class ARProtocol {
 
                 if (readStage == READ_NO) {    // got header
 
-                    System.out.println  ("got header " + aWord);
+                    //System.out.println  ("got header " + aWord);
                     //controller.showAlert("got header " + aWord);
                     
                     if (cmdTokens.size() > 0) {
