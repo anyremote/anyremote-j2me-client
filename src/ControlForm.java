@@ -1218,15 +1218,16 @@ public class ControlForm extends CanvasConsumer {
     
     public int getCoverSize() {
         int ret = -1;
-	if (skin == SK_7X1 && useTicker) {
+	//if (skin == SK_7X1 && useTicker) {
             int yTop	= getStatusY() + (cfFont.getHeight()<<2);    // title + status size
-            int yBottom = yCorner;
+            //int yBottom = yCorner;
+            int yBottom = controller.cScreen.CH - icSize - (split<<1) - 2;
             if (useVolume) {
             	yBottom -= 8;
             }
             int sz = yBottom - yTop;
 	    ret = controller.cScreen.CW > sz ? sz : controller.cScreen.CW;
-        }
+        //}
         return ret;
     }
                
