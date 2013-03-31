@@ -1,3 +1,7 @@
+* Sun 31 Mar 13 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.31
+- Support for  Set(list,icon,name|none) syntax. Support named cover uploading
+  and named cover auto-uploading. Some bugfixes.
+
 * Wed Mar 13 2012 Mikhail Fedotov <anyremote at mail.ru> - 4.30
 - Support for Set(*color,#XXXXXX) syntax and Set(*caption...) command.
 
